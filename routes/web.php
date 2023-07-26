@@ -17,12 +17,17 @@ use Illuminate\Support\Facades\Route;
     return view('theme.app');
 }); */
 
+//Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');
+
+Route::post('/guardarGrupServ', 'GrupoServiciosController@Guardar');
+
+Route::post('/listarGrupServ', 'GrupoServiciosController@Listar');
+
 Route::get('/{optional?}', function () {
     return view('theme.app');
 })->name('basepath')
     ->where('optional','.*');
 
 
-//Auth::routes();
-
-//Route::get('/home', 'HomeController@index')->name('home');

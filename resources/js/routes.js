@@ -16,10 +16,20 @@ import Vue from 'vue'
             component: require('./components/Plantilla.vue').default
         },
         // Modulo tipo propiedasdes
-        /* {
-            path: '/tipoPropiedad',
-            name: 'TipoPropiedad',
-            component: require('./components/Propiedades/Index.vue').default
-        }, */
+        {
+            path: '/grupoServicio',
+            name: 'GrupoServicio',
+            component: require('./components/GrupoServicios/Index.vue').default
+        },
+        {
+            path: '/empresaServicio',
+            name: 'EmpresaServicio',
+            component: require('./components/EmpresaServicios/Index.vue').default
+        },
+        {
+            path: '/modoPagoServicio',
+            name: 'ModoPagoServicio',
+            component: require('./components/ModoPagoServicios/Index.vue').default
+        },
     ]
 })
