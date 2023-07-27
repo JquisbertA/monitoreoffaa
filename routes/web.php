@@ -33,12 +33,10 @@ Route::post('/estadoGrupServ', 'GrupoServiciosController@CambioEstado');
 
 
 Route::post('/guardarEmpreServ', 'EmpresaServiciosController@Guardar');
-
 Route::post('/listarEmpreServ', 'EmpresaServiciosController@Listar');
-
 Route::post('/datosEmpreServ', 'EmpresaServiciosController@Datos');
-
 Route::post('/editarEmpreServ', 'EmpresaServiciosController@Editar');
+Route::post('/estadoEmpreServ', 'EmpresaServiciosController@CambioEstado');
 
 
 Route::post('/guardarPagoServ', 'PagoServiciosController@Guardar');

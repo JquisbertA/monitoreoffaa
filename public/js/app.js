@@ -2020,6 +2020,19 @@ __webpack_require__.r(__webpack_exports__);
         // handle error
         console.log(error);
       });
+    },
+    CambiarEstado: function CambiarEstado(estado, id) {
+      var me = this;
+      axios.post("/estadoEmpreServ", {
+        estado: estado,
+        id: id
+      }).then(function (response) {
+        //Respuesta de la peticion
+        me.Listar();
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
     }
   }
 });
@@ -2399,13 +2412,37 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "fa fa-edit"
-    })]), _vm._v(" "), _vm._m(4, true)]), _vm._v(" "), _c("td", {
+    })]), _vm._v(" "), l.estado == 1 ? _c("button", {
+      staticClass: "btn btn-danger btn-sm",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.CambiarEstado(l.estado, l.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "fa fa-trash"
+    })]) : _c("button", {
+      staticClass: "btn btn-success btn-sm",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.CambiarEstado(l.estado, l.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "fa fa-check"
+    })])]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(l.sigla))]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(l.descripcion))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.codigo))]), _vm._v(" "), _vm._m(5, true)]);
+    }, [_vm._v(_vm._s(l.codigo))]), _vm._v(" "), l.estado == 1 ? [_vm._m(4, true)] : [_vm._m(5, true)]], 2);
   }), 0)])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal",
     attrs: {
@@ -2654,25 +2691,23 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("button", {
-    staticClass: "btn btn-danger btn-sm",
-    attrs: {
-      type: "button"
+  return _c("td", {
+    staticStyle: {
+      width: "100px"
     }
-  }, [_c("i", {
-    staticClass: "fa fa-trash"
-  })]);
+  }, [_c("div", [_c("span", {
+    staticClass: "badge badge-success"
+  }, [_vm._v("Activo")])])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("td", {
     staticStyle: {
-      width: "100px",
-      "text-align": "center"
+      width: "100px"
     }
   }, [_c("div", [_c("span", {
-    staticClass: "badge badge-success"
-  }, [_vm._v("Activo")])])]);
+    staticClass: "badge badge-danger"
+  }, [_vm._v("Inactivo")])])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
