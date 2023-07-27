@@ -29,6 +29,26 @@ Route::post('/datosGrupServ', 'GrupoServiciosController@Datos');
 
 Route::post('/editarGrupServ', 'GrupoServiciosController@Editar');
 
+
+Route::post('/guardarEmpreServ', 'EmpresaServiciosController@Guardar');
+
+Route::post('/listarEmpreServ', 'EmpresaServiciosController@Listar');
+
+Route::post('/datosEmpreServ', 'EmpresaServiciosController@Datos');
+
+Route::post('/editarEmpreServ', 'EmpresaServiciosController@Editar');
+
+
+Route::post('/guardarPagoServ', 'PagoServiciosController@Guardar');
+
+Route::post('/listarPagoServ', 'PagoServiciosController@Listar');
+
+Route::post('/datosPagoServ', 'PagoServiciosController@Datos');
+
+Route::post('/editarPagoServ', 'PagoServiciosController@Editar');
+
+
+
 Route::get('/{optional?}', function () {
     return view('theme.app');
 })->name('basepath')
