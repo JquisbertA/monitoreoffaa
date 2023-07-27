@@ -29,6 +29,8 @@ Route::post('/datosGrupServ', 'GrupoServiciosController@Datos');
 
 Route::post('/editarGrupServ', 'GrupoServiciosController@Editar');
 
+Route::post('/estadoGrupServ', 'GrupoServiciosController@CambioEstado');
+
 
 Route::post('/guardarEmpreServ', 'EmpresaServiciosController@Guardar');
 
