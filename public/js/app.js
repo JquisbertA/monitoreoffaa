@@ -1968,8 +1968,11 @@ __webpack_require__.r(__webpack_exports__);
       buscar: '',
       //modal registro
       descripcion: '',
-      observaciones: ''
+      observaciones: '',
       //modal editar
+      descripcionE: '',
+      observacionesE: '',
+      idE: ''
     };
   },
   mounted: function mounted() {
@@ -2015,6 +2018,40 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
       console.log('descrip:' + this.descripcion + ', obs:' + this.observaciones);
+    },
+    AbrirModalEdit: function AbrirModalEdit(id) {
+      console.log(id);
+      var me = this;
+      me.idE = id; //llamamos al id global
+      axios.post("/datosGrupServ", {
+        id: id
+      }).then(function (response) {
+        //Respuesta de la peticion
+        console.log(response);
+        me.descripcionE = response.data.descripcion;
+        me.observacionesE = response.data.observaciones;
+        $('#pruebaedit').modal('show');
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    EditarDatos: function EditarDatos() {
+      //console.log('ya funciona el boton');
+      var me = this;
+      axios.post("/editarGrupServ", {
+        descripcion: me.descripcionE,
+        observaciones: me.observacionesE,
+        id: me.idE
+      }).then(function (response) {
+        //Respuesta de la peticion
+        console.log(response);
+        $('#pruebaedit').modal('hide');
+        me.Listar();
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
     }
   }
 });
@@ -2468,7 +2505,21 @@ var render = function render() {
   }, [_vm._m(3), _vm._v(" "), _c("tbody", _vm._l(_vm.lista, function (l) {
     return _c("tr", {
       staticClass: "even pointer"
-    }, [_vm._m(4, true), _vm._v(" "), _c("td", {
+    }, [_c("td", {
+      staticClass: "a-center"
+    }, [_c("button", {
+      staticClass: "btn btn-warning btn-sm",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.AbrirModalEdit(l.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "fa fa-edit"
+    })]), _vm._v(" "), _vm._m(4, true)]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(l.descripcion))]), _vm._v(" "), _c("td", {
       staticClass: ""
@@ -2551,7 +2602,85 @@ var render = function render() {
         return _vm.GuardarDatos();
       }
     }
-  }, [_vm._v("Guardar Cambios")])])])])])]);
+  }, [_vm._v("Guardar Cambios")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal",
+    attrs: {
+      tabindex: "-1",
+      id: "pruebaedit"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog"
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(8), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("form", {
+    staticClass: "form-horizontal form-label-left"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.descripcionE,
+      expression: "descripcionE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Descripcion"
+    },
+    domProps: {
+      value: _vm.descripcionE
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.descripcionE = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Observaciones")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.observacionesE,
+      expression: "observacionesE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Observacion"
+    },
+    domProps: {
+      value: _vm.observacionesE
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.observacionesE = $event.target.value;
+      }
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
+  }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cerrar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.EditarDatos();
+      }
+    }
+  }, [_vm._v("Editar Cambios")])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -2595,23 +2724,14 @@ var staticRenderFns = [function () {
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("td", {
-    staticClass: "a-center"
-  }, [_c("button", {
-    staticClass: "btn btn-warning btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-edit"
-  })]), _vm._v(" "), _c("button", {
+  return _c("button", {
     staticClass: "btn btn-danger btn-sm",
     attrs: {
       type: "button"
     }
   }, [_c("i", {
     staticClass: "fa fa-trash"
-  })])]);
+  })]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
@@ -2640,6 +2760,25 @@ var staticRenderFns = [function () {
   }, [_c("h5", {
     staticClass: "modal-title"
   }, [_vm._v("Registrar Servicio")]), _vm._v(" "), _c("button", {
+    staticClass: "close",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  }, [_c("span", {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title"
+  }, [_vm._v("Editar Servicio")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",

@@ -26,10 +26,11 @@ class GrupoServiciosController extends Controller
     {
         $buscar = $request->buscar;
         if ($request->buscar == ''){
-            $data = DB::table('grupo_servicios')->get();
+            $data = DB::table('grupo_servicios')->orderBy('id')->get();
         }
         else{
             $data = DB::table('grupo_servicios')
+            ->orderBy('id')
             ->where(function ($q) use ($buscar){
                 $q->where('descripcion','like','%'.$buscar.'%')
                 ->orwhere('observaciones','like','%'.$buscar.'%');
@@ -39,5 +40,27 @@ class GrupoServiciosController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function Datos(Request $request){
+        $data = DB::table('grupo_servicios')
+        ->select('descripcion','observaciones')
+        ->where('id',$request->id)
+        ->first();
+
+        return response()->json($data);
+    }
+
+    public function Editar(Request $request)
+    {
+        GrupoServicios::where('id',$request->id)
+        ->update([
+            'descripcion' => $request->descripcion,
+            'observaciones' => $request->observaciones
+        ]);
+
+        return response()->json([
+            'code' => 200
+        ]);
     }
 }

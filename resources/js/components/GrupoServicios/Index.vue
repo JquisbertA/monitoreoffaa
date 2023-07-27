@@ -44,7 +44,7 @@
                 <tbody>
                   <tr class="even pointer" v-for="l in lista">
                     <td class="a-center ">
-                      <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button>
+                      <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(l.id)"><i class="fa fa-edit"></i></button>
                       <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                     </td>
                     <td class=" ">{{ l.descripcion }}</td>
@@ -92,6 +92,36 @@
         </div>
       </div>
     </div>
+
+    <div class="modal" tabindex="-1" id="pruebaedit">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Servicio</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal form-label-left">
+              <div class="form-group row">
+                <label>Descripción</label>
+                <input type="text" class="form-control" placeholder="Ingrese Descripcion" v-model="descripcionE">
+              </div>
+              <div class="form-group row">
+                <label>Observaciones</label>
+                <input type="text" class="form-control" placeholder="Ingrese Observacion" v-model="observacionesE">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" v-on:click="EditarDatos()">Editar Cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -103,8 +133,11 @@
         buscar:'',
         //modal registro
         descripcion:'',
-        observaciones:''
+        observaciones:'',
         //modal editar
+        descripcionE:'',
+        observacionesE:'',
+        idE:'',
       }
     },
     mounted() {
@@ -162,6 +195,51 @@
         })
         
         console.log('descrip:'+this.descripcion+', obs:'+this.observaciones);
+      },
+
+      AbrirModalEdit(id){
+        console.log(id);
+        let me = this;
+        me.idE = id; //llamamos al id global
+        axios
+        .post("/datosGrupServ", {
+          id: id
+        })
+        .then(function (response) {
+          //Respuesta de la peticion
+          console.log(response);
+          me.descripcionE = response.data.descripcion;
+          me.observacionesE = response.data.observaciones;
+          $('#pruebaedit').modal('show');
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+
+      },
+
+      EditarDatos(){
+        //console.log('ya funciona el boton');
+        let me = this;
+        
+        axios
+        .post("/editarGrupServ", {
+          descripcion: me.descripcionE,
+          observaciones: me.observacionesE,
+          id:me.idE
+        })
+        .then(function (response) {
+          //Respuesta de la peticion
+          console.log(response);
+          $('#pruebaedit').modal('hide');
+          me.Listar();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+
       }
   },
 }

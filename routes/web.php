@@ -25,6 +25,10 @@ Route::post('/guardarGrupServ', 'GrupoServiciosController@Guardar');
 
 Route::post('/listarGrupServ', 'GrupoServiciosController@Listar');
 
+Route::post('/datosGrupServ', 'GrupoServiciosController@Datos');
+
+Route::post('/editarGrupServ', 'GrupoServiciosController@Editar');
+
 Route::get('/{optional?}', function () {
     return view('theme.app');
 })->name('basepath')
