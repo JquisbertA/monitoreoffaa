@@ -2160,10 +2160,97 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      lista: [],
+      buscar: '',
+      //modal registro
+      descripcion: '',
+      codigo: '',
+      //modal editar
+      descripcionE: '',
+      codigoE: '',
+      idE: ''
+    };
   },
-  mounted: function mounted() {},
-  methods: {}
+  mounted: function mounted() {
+    this.Listar();
+  },
+  methods: {
+    Listar: function Listar() {
+      var me = this;
+      axios.post('/listarPagoServ', {
+        buscar: me.buscar
+      }).then(function (response) {
+        //Respuesta de la peticion
+        //console.log(response);
+        me.lista = response.data;
+        console.log(me.lista);
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    BuscarPago: function BuscarPago() {
+      var _this = this;
+      clearTimeout(this.setTiemoutBuscador);
+      this.setTiemoutBuscador = setTimeout(function () {
+        _this.Listar(1);
+      }, 360);
+    },
+    AbrirModal: function AbrirModal() {
+      $('#prueba').modal('show');
+    },
+    GuardarDatos: function GuardarDatos() {
+      var me = this;
+      axios.post("/guardarPagoServ", {
+        descripcion: me.descripcion,
+        codigo: me.codigo
+      }).then(function (response) {
+        //Respuesta de la peticion
+        console.log(response);
+        $('#prueba').modal('hide');
+        me.Listar();
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+      console.log('descrip:' + this.descripcion + ', obs:' + this.codigo);
+    },
+    AbrirModalEdit: function AbrirModalEdit(id) {
+      console.log(id);
+      var me = this;
+      me.idE = id; //llamamos al id global
+      axios.post("/datosPagoServ", {
+        id: id
+      }).then(function (response) {
+        //Respuesta de la peticion
+        console.log(response);
+        me.descripcionE = response.data.descripcion;
+        me.codigoE = response.data.codigo;
+        $('#pruebaedit').modal('show');
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    },
+    EditarDatos: function EditarDatos() {
+      //console.log('ya funciona el boton');
+      var me = this;
+      axios.post("/editarPagoServ", {
+        descripcion: me.descripcionE,
+        codigo: me.codigoE,
+        id: me.idE
+      }).then(function (response) {
+        //Respuesta de la peticion
+        console.log(response);
+        $('#pruebaedit').modal('hide');
+        me.Listar();
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3042,22 +3129,37 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _vm._m(0);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
   return _c("div", [_c("div", {
     staticClass: "page-title"
-  }, [_c("div", {
-    staticClass: "title_left"
-  }, [_c("h3", [_vm._v("Gestión Pago de Servicios")])]), _vm._v(" "), _c("div", {
+  }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "title_right"
   }, [_c("div", {
     staticClass: "col-md-5 col-sm-5 form-group pull-right top_search"
   }, [_c("div", {
     staticClass: "input-group"
-  }, [_vm._v("\n          Panel Administrador / Pago de Servicios\n        ")])])])]), _vm._v(" "), _c("div", {
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.buscar,
+      expression: "buscar"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Buscar..."
+    },
+    domProps: {
+      value: _vm.buscar
+    },
+    on: {
+      keyup: _vm.BuscarPago,
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.buscar = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _vm._m(1)])])])]), _vm._v(" "), _c("div", {
     staticClass: "clearfix"
   }), _vm._v(" "), _c("br"), _vm._v(" "), _c("div", {
     staticClass: "row"
@@ -3065,10 +3167,13 @@ var staticRenderFns = [function () {
     staticClass: "col-md-12 col-sm-12"
   }, [_c("div", {
     staticClass: "x_panel"
-  }, [_c("div", {
-    staticClass: "x_title"
-  }, [_c("h2", [_vm._v("Lista Modo de Pagos Servicios ")]), _vm._v(" "), _c("ul", {
-    staticClass: "nav navbar-right panel_toolbox"
+  }, [_vm._m(2), _vm._v(" "), _c("div", {
+    staticClass: "x_content"
+  }, [_c("ul", {
+    staticClass: "nav",
+    staticStyle: {
+      "padding-bottom": "10px"
+    }
   }, [_c("button", {
     staticClass: "btn btn-success btn-sm",
     staticStyle: {
@@ -3077,35 +3182,227 @@ var staticRenderFns = [function () {
     },
     attrs: {
       type: "submit"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.AbrirModal();
+      }
     }
   }, [_c("i", {
     staticClass: "fa fa-plus-circle"
-  }), _vm._v(" Agregar modo de pago")])]), _vm._v(" "), _c("div", {
-    staticClass: "clearfix"
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "x_content"
-  }, [_c("div", {
-    staticClass: "col-md-4 col-sm-4 form-group pull-right"
-  }, [_c("div", {
-    staticClass: "input-group"
-  }, [_c("input", {
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      placeholder: "Ingresar datos"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "input-group-btn"
-  }, [_c("button", {
-    staticClass: "btn btn-dark",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("Buscar")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" Agregar Modo Pago")])]), _vm._v(" "), _c("div", {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table table-striped jambo_table bulk_action"
-  }, [_c("thead", [_c("tr", {
+  }, [_vm._m(3), _vm._v(" "), _c("tbody", _vm._l(_vm.lista, function (l) {
+    return _c("tr", {
+      staticClass: "even pointer"
+    }, [_c("td", {
+      staticClass: "a-center"
+    }, [_c("button", {
+      staticClass: "btn btn-warning btn-sm",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.AbrirModalEdit(l.id);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "fa fa-edit"
+    })]), _vm._v(" "), _vm._m(4, true)]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.descripcion))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.codigo))]), _vm._v(" "), l.estado == 1 ? [_vm._m(5, true)] : [_vm._m(6, true)]], 2);
+  }), 0)])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal",
+    attrs: {
+      tabindex: "-1",
+      id: "prueba"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog"
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(7), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("form", {
+    staticClass: "form-horizontal form-label-left"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.descripcion,
+      expression: "descripcion"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Descripcion"
+    },
+    domProps: {
+      value: _vm.descripcion
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.descripcion = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Codigo")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.codigo,
+      expression: "codigo"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Codigo"
+    },
+    domProps: {
+      value: _vm.codigo
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.codigo = $event.target.value;
+      }
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
+  }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cerrar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.GuardarDatos();
+      }
+    }
+  }, [_vm._v("Guardar Cambios")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal",
+    attrs: {
+      tabindex: "-1",
+      id: "pruebaedit"
+    }
+  }, [_c("div", {
+    staticClass: "modal-dialog"
+  }, [_c("div", {
+    staticClass: "modal-content"
+  }, [_vm._m(8), _vm._v(" "), _c("div", {
+    staticClass: "modal-body"
+  }, [_c("form", {
+    staticClass: "form-horizontal form-label-left"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.descripcionE,
+      expression: "descripcionE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Descripcion"
+    },
+    domProps: {
+      value: _vm.descripcionE
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.descripcionE = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Codigo")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.codigoE,
+      expression: "codigoE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Codigo"
+    },
+    domProps: {
+      value: _vm.codigoE
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.codigoE = $event.target.value;
+      }
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "modal-footer"
+  }, [_c("button", {
+    staticClass: "btn btn-secondary",
+    attrs: {
+      type: "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cerrar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.EditarDatos();
+      }
+    }
+  }, [_vm._v("Editar Cambios")])])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "title_left"
+  }, [_c("h3", [_vm._v("Gestión Modo Pago de Servicios")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("span", {
+    staticClass: "input-group-btn"
+  }, [_c("button", {
+    staticClass: "btn btn-default",
+    attrs: {
+      type: "button"
+    }
+  }, [_vm._v("Buscar")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "x_title"
+  }, [_c("h2", [_vm._v("Lista Modo de Pagos Servicios ")]), _vm._v(" "), _c("div", {
+    staticClass: "clearfix"
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", [_c("tr", {
     staticClass: "headings"
   }, [_c("th", {
     staticClass: "column-title"
@@ -3115,136 +3412,46 @@ var staticRenderFns = [function () {
     staticClass: "column-title"
   }, [_vm._v("Codigo ")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
-  }, [_vm._v("Estado ")])])]), _vm._v(" "), _c("tbody", [_c("tr", {
-    staticClass: "even pointer"
-  }, [_c("td", {
-    staticClass: "a-center"
-  }, [_c("button", {
-    staticClass: "btn btn-warning btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-edit"
-  })]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Estado ")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("button", {
     staticClass: "btn btn-danger btn-sm",
     attrs: {
       type: "button"
     }
   }, [_c("i", {
     staticClass: "fa fa-trash"
-  })])]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("ANUAL ")]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("121000210 ")]), _vm._v(" "), _c("td", {
+  })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("td", {
     staticStyle: {
-      width: "100px",
-      "text-align": "center"
+      width: "100px"
     }
   }, [_c("div", [_c("span", {
     staticClass: "badge badge-success"
-  }, [_vm._v("Activo")])])])]), _vm._v(" "), _c("tr", {
-    staticClass: "even pointer"
-  }, [_c("td", {
-    staticClass: "a-center"
-  }, [_c("button", {
-    staticClass: "btn btn-warning btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-edit"
-  })]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-danger btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-trash"
-  })])]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("BIMESTRAL ")]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("121000210 ")]), _vm._v(" "), _c("td", {
+  }, [_vm._v("Activo")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("td", {
     staticStyle: {
-      width: "100px",
-      "text-align": "center"
+      width: "100px"
     }
   }, [_c("div", [_c("span", {
-    staticClass: "badge badge-success"
-  }, [_vm._v("Activo")])])])]), _vm._v(" "), _c("tr", {
-    staticClass: "even pointer"
-  }, [_c("td", {
-    staticClass: "a-center"
-  }, [_c("button", {
-    staticClass: "btn btn-warning btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-edit"
-  })]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-danger btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-trash"
-  })])]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("MENSUAL ")]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("121000210 ")]), _vm._v(" "), _c("td", {
-    staticStyle: {
-      width: "100px",
-      "text-align": "center"
-    }
-  }, [_c("div", [_c("span", {
-    staticClass: "badge badge-success"
-  }, [_vm._v("Activo")])])])]), _vm._v(" "), _c("tr", {
-    staticClass: "even pointer"
-  }, [_c("td", {
-    staticClass: "a-center"
-  }, [_c("button", {
-    staticClass: "btn btn-warning btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-edit"
-  })]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-danger btn-sm",
-    attrs: {
-      type: "button"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-trash"
-  })])]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("SEMESTRAL ")]), _vm._v(" "), _c("td", {
-    staticClass: ""
-  }, [_vm._v("121000210 ")]), _vm._v(" "), _c("td", {
-    staticStyle: {
-      width: "100px",
-      "text-align": "center"
-    }
-  }, [_c("div", [_c("span", {
-    staticClass: "badge badge-success"
-  }, [_vm._v("Activo")])])])])])])])])])])]), _vm._v(" "), _c("div", {
-    staticClass: "modal",
-    attrs: {
-      tabindex: "-1"
-    }
-  }, [_c("div", {
-    staticClass: "modal-dialog"
-  }, [_c("div", {
-    staticClass: "modal-content"
-  }, [_c("div", {
+    staticClass: "badge badge-danger"
+  }, [_vm._v("Inactivo")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title"
-  }, [_vm._v("Modal title")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Registrar Modo de Pago")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
@@ -3255,22 +3462,26 @@ var staticRenderFns = [function () {
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v("×")])])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-body"
-  }, [_c("p", [_vm._v("Modal body text goes here.")])]), _vm._v(" "), _c("div", {
-    staticClass: "modal-footer"
-  }, [_c("button", {
-    staticClass: "btn btn-secondary",
+  }, [_vm._v("×")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "modal-header"
+  }, [_c("h5", {
+    staticClass: "modal-title"
+  }, [_vm._v("Editar Modo de Pago")]), _vm._v(" "), _c("button", {
+    staticClass: "close",
     attrs: {
       type: "button",
-      "data-dismiss": "modal"
+      "data-dismiss": "modal",
+      "aria-label": "Close"
     }
-  }, [_vm._v("Close")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-primary",
+  }, [_c("span", {
     attrs: {
-      type: "button"
+      "aria-hidden": "true"
     }
-  }, [_vm._v("Save changes")])])])])])]);
+  }, [_vm._v("×")])])]);
 }];
 render._withStripped = true;
 
