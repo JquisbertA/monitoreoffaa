@@ -63,4 +63,19 @@ class PagoServiciosController extends Controller
             'code' => 200
         ]);
     }
+
+    public function CambioEstado(Request $request)
+    {
+        $estado = 1 - $request->estado;
+
+        //Otra forma es
+        PagoServicios::where('id',$request->id)
+        ->update([
+            'estado' => $estado
+        ]);
+
+        return response()->json([
+            'code' => 200
+        ]);
+    }
 }

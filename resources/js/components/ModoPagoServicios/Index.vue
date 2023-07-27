@@ -46,7 +46,8 @@
                     <tr class="even pointer" v-for="l in lista">
                       <td class="a-center ">
                         <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(l.id)"><i class="fa fa-edit"></i></button>
-                        <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-danger btn-sm" v-if="l.estado == 1" v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-success btn-sm" v-else v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-check"></i></button>
                       </td>
                       <td class=" ">{{ l.descripcion }}</td>
                       <td class=" ">{{ l.codigo }}</td>
@@ -235,6 +236,24 @@
           //Respuesta de la peticion
           console.log(response);
           $('#pruebaedit').modal('hide');
+          me.Listar();
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+
+      },
+
+      CambiarEstado(estado,id){
+        let me = this;
+        axios
+        .post("/estadoPagoServ", {
+          estado: estado,
+          id : id
+        })
+        .then(function (response) {
+          //Respuesta de la peticion
           me.Listar();
         })
         .catch(function (error) {

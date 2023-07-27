@@ -40,13 +40,10 @@ Route::post('/estadoEmpreServ', 'EmpresaServiciosController@CambioEstado');
 
 
 Route::post('/guardarPagoServ', 'PagoServiciosController@Guardar');
-
 Route::post('/listarPagoServ', 'PagoServiciosController@Listar');
-
 Route::post('/datosPagoServ', 'PagoServiciosController@Datos');
-
 Route::post('/editarPagoServ', 'PagoServiciosController@Editar');
-
+Route::post('/estadoPagoServ', 'PagoServiciosController@CambioEstado');
 
 
 Route::get('/{optional?}', function () {
