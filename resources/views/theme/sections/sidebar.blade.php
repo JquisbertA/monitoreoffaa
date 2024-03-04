@@ -29,10 +29,22 @@
           </li>
           <li><a><i class="fa fa-desktop"></i> Configuracion <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
-              <li><a href="typography.html">Grupo Servicios</a></li>
-              <li><a href="general_elements.html">Empresas Servicios</a></li>
+              <li>
+                <router-link class="nav-link" to='/grupoServicio'>
+                  <p class="mb-0">Grupo Servicios</p>
+                </router-link>
+              </li>
+              <li>
+                <router-link class="nav-link" to='/empresaServicio'>
+                  <p class="mb-0">Empresas Servicios</p>
+                </router-link>
+              </li>
               <li><a href="widgets.html">Tipo Servicio</a></li>
-              <li><a href="media_gallery.html">Modos de Pago</a></li>
+              <li>
+                <router-link class="nav-link" to='/modoPagoServicio'>
+                  <p class="mb-0">Modos de Pago</p>
+                </router-link>
+              </li>
               <li><a href="icons.html">Unidades</a></li>
               <li><a href="glyphicons.html">Datos titular</a></li>
               <li><a href="invoice.html">Proveedores</a></li>

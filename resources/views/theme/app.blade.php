@@ -32,7 +32,7 @@
 </head>
 
 <body class="nav-md">
-  <div class="container body">
+  <div class="container body" id="app">
     <div class="main_container">
       {{-- sidebar --}}
       @include('theme.sections.sidebar')
@@ -41,7 +41,7 @@
       <!-- /top navigation -->
 
       <!-- page content -->
-      <div class="right_col" role="main" id="app">
+      <div class="right_col" role="main">
         <div class="">
           <app></app>
         </div>
