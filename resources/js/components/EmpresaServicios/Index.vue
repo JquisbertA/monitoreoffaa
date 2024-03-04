@@ -35,21 +35,16 @@
               <table class="table table-striped jambo_table bulk_action">
                 <thead>
                   <tr class="headings">
-                    <th class="column-title">Acciones </th>
                     <th class="column-title">Sigla</th>
                     <th class="column-title">Descripción</th>
                     <th class="column-title">Codigo </th>
                     <th class="column-title">Estado </th>
+                    <th class="column-title">Acciones </th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <tr class="even pointer" v-for="l in lista">
-                    <td class="a-center ">
-                      <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(l.id)"><i class="fa fa-edit"></i></button>                      
-                      <button type="button" class="btn btn-danger btn-sm" v-if="l.estado == 1" v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-trash"></i></button>
-                      <button type="button" class="btn btn-success btn-sm" v-else v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-check"></i></button>
-                    </td>
                     <td class=" ">{{ l.sigla }}</td>
                     <td class=" ">{{ l.descripcion }}</td>
                     <td class=" ">{{ l.codigo }}</td>
@@ -59,6 +54,11 @@
                     <template v-else>
                       <td style="width: 100px;"><div><span class="badge badge-danger">Inactivo</span></div></td>
                     </template>
+                    <td class="a-center ">
+                      <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(l.id)"><i class="fa fa-edit"></i></button>                      
+                      <button type="button" class="btn btn-danger btn-sm" v-if="l.estado == 1" v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-trash"></i></button>
+                      <button type="button" class="btn btn-success btn-sm" v-else v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-check"></i></button>
+                    </td>
                   </tr>
                   
                   
