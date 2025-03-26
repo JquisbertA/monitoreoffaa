@@ -9,7 +9,12 @@
           {{-- <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown"
             data-toggle="dropdown" aria-expanded="false">
           </a> --}}
-            <button class="btn btn-danger btn-sm"> Cerrar Sesión</button>
+            {{-- <button class="btn btn-danger btn-sm"> Cerrar Sesión</button> --}}
+            <li class="nav-item">
+              <a type="button" class="btn btn-outline-danger btn-sm" href="{{ route('logout') }}">
+                <i class="fa fa-power-off"></i> Cerrar Sesion
+              </a>
+            </li>
           {{-- <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="javascript:;"> Profile</a>
             <a class="dropdown-item" href="javascript:;">

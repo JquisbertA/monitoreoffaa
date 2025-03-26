@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-  <title>Servicios Basicos FAB</title>
+  <title>Monitoreo FFAA</title>
 
   <!-- Bootstrap -->
   <link href="{{ asset('theme/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -33,6 +33,7 @@
 
 <body class="nav-md">
   <div class="container body" id="app">
+    @if (Auth::check())
     <div class="main_container">
       {{-- sidebar --}}
       @include('theme.sections.sidebar')
@@ -52,11 +53,14 @@
       @include('theme.sections.footer')
       <!-- /footer content -->
     </div>
+    @else
+      <Auth ruta="{{route('basepath')}}"></Auth>
+    @endif
   </div>
-
   <script src="{{ asset('theme/vendors/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('js/app.js') }}"></script>
   <!-- jQuery -->
+  
   <!-- Bootstrap -->
   <script src="{{ asset('theme/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
   <!-- FastClick -->

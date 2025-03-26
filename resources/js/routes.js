@@ -8,18 +8,19 @@ import Vue from 'vue'
     routes: [
         {
             path: '*', //Cuando no encuentre una ruta aca sera por defecto
-            component: require('./components/ExampleComponent.vue').default
+            component: require('./components/Notfound.vue').default
         },
         {
             path: '/',
             name: 'Inicio',
-            component: require('./components/Plantilla.vue').default
+            component: require('./components/Bienvenida.vue').default
         },
         // Modulo tipo propiedasdes
         {
             path: '/grupoServicio',
             name: 'GrupoServicio',
-            component: require('./components/GrupoServicios/Index.vue').default
+            component: require('./components/GrupoServicios/Index.vue').default,
+            /* beforeEnter: [auth, can('ver usuarios')] */
         },
         {
             path: '/empresaServicio',
@@ -30,6 +31,65 @@ import Vue from 'vue'
             path: '/modoPagoServicio',
             name: 'ModoPagoServicio',
             component: require('./components/ModoPagoServicios/Index.vue').default
+        },
+
+        // ACCESO AL SISTEMA
+        {
+            path: '/usu',
+            name: 'Usuarios',
+            component:  require('./components/usuarios/Usuarios.vue').default,
+            /* beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('administracion.usuarios.index')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            } */
+        },
+
+
+
+        /******************* ROLES************************* */
+        {
+            path: '/lrol',
+            name: 'ListRoles',
+            component:  require('./components/roles/ListRoles.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('administracion.roles.index')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+        {
+            path: '/erol',
+            name: 'EditarRol',
+            component:  require('./components/roles/Editar.vue').default,
+            beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('rol-per')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
+        },
+
+        {
+            path: '/nrol',
+            name: 'NuevoRol',
+            component:  require('./components/roles/NuevoRol.vue').default,
+           beforeEnter: (to, from, next) => {
+                let per = window.user.permissions.map(permission=>permission.name);
+                if (per.includes('rol-per')) {
+                    next();
+                } else {
+                    next(from.path);
+                }
+            }
         },
     ]
 })
