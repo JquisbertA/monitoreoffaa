@@ -41,6 +41,12 @@ import Vue from 'vue'
             component: require('./components/Unidades/Ceo.vue').default
         },
 
+        {
+            path: '/mapa',
+            name: 'MapaCeo',
+            component: require('./components/Unidades/MapaCeo.vue').default
+        },
+
         // ACCESO AL SISTEMA
         {
             path: '/usu',

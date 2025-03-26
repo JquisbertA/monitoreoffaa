@@ -61,7 +61,10 @@
               <li><a href="form_validation.html">Reporte 3</a></li>
               <li><a href="form_wizards.html">Reporte 4</a></li>
               <li><a href="form_upload.html">Reporte 5</a></li>
-              <li><a href="form_buttons.html">Reporte 6</a></li>
+              <li>
+                <router-link class="nav-link" to="/mapa">Ver Mapa</router-link>
+            </li>
+            
             </ul>
           </li>
           <li><a><i class="fa fa-warning"></i> Incidentes <span class="fa fa-chevron-down"></span></a>

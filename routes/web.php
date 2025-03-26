@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MapaCeoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +59,11 @@ Route::post('/unidades/listaCeo', 'CeoController@Listar');
 Route::post('/unidades/datosCeo', 'CeoController@Datos');
 Route::post('/unidades/editarCeo', 'CeoController@Editar');
 Route::post('/unidades/estadoCeo', 'CeoController@CambioEstado');
+
+Route::get('/locations', 'MapaCeoController@index');
+Route::post('/locations', 'MapaCeoController@store');
+Route::delete('/locations/{id}', 'MapaCeoController@destroy')->name('locations.destroy');
+Route::put('/mapa-ceos/{mapaCeo}', 'MapaCeoController@update');
 
 // USUARIOS
 Route::post('/usuario/CrearUsuario','UserController@CrearUsuario');

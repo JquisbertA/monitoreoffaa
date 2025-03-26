@@ -45,8 +45,10 @@ Vue.component('Auth', require('./components/Auth.vue').default);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import Mapa from './components/Unidades/MapaCeo.vue';
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    components: { Mapa }
 });
