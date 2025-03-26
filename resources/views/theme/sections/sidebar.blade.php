@@ -30,7 +30,7 @@
           <li><a><i class="fa fa-users"></i> Personal <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
               <li>
-                <router-link class="nav-link" to='/grupoServicio'>
+                <router-link class="nav-link" to='/personal'>
                   <p class="mb-0">Personal</p>
                 </router-link>
               </li>

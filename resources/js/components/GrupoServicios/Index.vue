@@ -2,7 +2,7 @@
   <div>
     <div class="page-title">
       <div class="title_left">
-        <h3>Gestión Grupo Servicios</h3>
+        <h3>Gestión Grupo Servicios prueba</h3>
       </div>
 
       <div class="title_right">
