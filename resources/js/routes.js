@@ -40,6 +40,16 @@ import Vue from 'vue'
             name: 'CeoTotal',
             component: require('./components/Unidades/Ceo.vue').default
         },
+        {
+            path: '/gguu',
+            name: 'GrandeUnidad',
+            component: require('./components/Unidades/GranUni.vue').default
+        },
+        {
+            path: '/ppuu',
+            name: 'PequeñaUnidad',
+            component: require('./components/Unidades/PeqUni.vue').default
+        },
 
         {
             path: '/mapa',

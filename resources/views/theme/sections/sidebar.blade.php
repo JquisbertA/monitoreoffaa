@@ -52,15 +52,17 @@
               <li><a href="calendar.html">Otros</a></li>
             </ul>
           </li>
-          <li><a><i class="fa fa-list"></i> Unidades <span class="fa fa-chevron-down"></span></a>
+          <li><a><i class="fa fa-list"></i> Unidades <span class="fa fa-chevron-down"></span></a>{{-- UNIDADES --}}
             <ul class="nav child_menu">
               <li>
                 <router-link class="nav-link" to='/ceo'>CEO's</router-link>
               </li>
-              <li><a href="form_advanced.html">Reporte 2</a></li>
-              <li><a href="form_validation.html">Reporte 3</a></li>
-              <li><a href="form_wizards.html">Reporte 4</a></li>
-              <li><a href="form_upload.html">Reporte 5</a></li>
+              <li>
+                <router-link class="nav-link" to='/gguu'>Grandes Unidades</router-link>
+              </li>
+              <li>
+                <router-link class="nav-link" to='/ppuu'>Pequeñas Unidades</router-link>
+              </li>
               <li>
                 <router-link class="nav-link" to="/mapa">Ver Mapa</router-link>
             </li>

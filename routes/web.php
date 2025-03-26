@@ -60,6 +60,21 @@ Route::post('/unidades/datosCeo', 'CeoController@Datos');
 Route::post('/unidades/editarCeo', 'CeoController@Editar');
 Route::post('/unidades/estadoCeo', 'CeoController@CambioEstado');
 
+/* GRANDES UNIDADES */
+Route::post('/unidades/crearGranUni', 'GranUnidadController@Guardar');
+Route::post('/unidades/listaGranUni', 'GranUnidadController@Listar');
+Route::post('/unidades/datosGranUni', 'GranUnidadController@Datos');
+Route::post('/unidades/editarGranUni', 'GranUnidadController@Editar');
+Route::post('/unidades/estadoGranUni', 'GranUnidadController@CambioEstado');
+
+
+/* PEQUEÑAS UNIDADES */
+Route::post('/unidades/crearPeqUni', 'PeqUnidadController@Guardar');
+Route::post('/unidades/listaPeqUni', 'PeqUnidadController@Listar');
+Route::post('/unidades/datosPeqUni', 'PeqUnidadController@Datos');
+Route::post('/unidades/editarPeqUni', 'PeqUnidadController@Editar');
+Route::post('/unidades/estadoPeqUni', 'PeqUnidadController@CambioEstado');
+
 Route::get('/locations', 'MapaCeoController@index');
 Route::post('/locations', 'MapaCeoController@store');
 Route::delete('/locations/{id}', 'MapaCeoController@destroy')->name('locations.destroy');
