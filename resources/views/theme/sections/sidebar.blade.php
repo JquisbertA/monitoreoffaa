@@ -54,7 +54,9 @@
           </li>
           <li><a><i class="fa fa-list"></i> Unidades <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
-              <li><a href="form.html">Reporte 1</a></li>
+              <li>
+                <router-link class="nav-link" to='/ceo'>CEO's</router-link>
+              </li>
               <li><a href="form_advanced.html">Reporte 2</a></li>
               <li><a href="form_validation.html">Reporte 3</a></li>
               <li><a href="form_wizards.html">Reporte 4</a></li>

@@ -53,8 +53,11 @@ Route::post('/editarPagoServ', 'PagoServiciosController@Editar');
 Route::post('/estadoPagoServ', 'PagoServiciosController@CambioEstado');
 
 
-
-
+Route::post('/unidades/crearCeo', 'CeoController@Guardar');
+Route::post('/unidades/listaCeo', 'CeoController@Listar');
+Route::post('/unidades/datosCeo', 'CeoController@Datos');
+Route::post('/unidades/editarCeo', 'CeoController@Editar');
+Route::post('/unidades/estadoCeo', 'CeoController@CambioEstado');
 
 // USUARIOS
 Route::post('/usuario/CrearUsuario','UserController@CrearUsuario');

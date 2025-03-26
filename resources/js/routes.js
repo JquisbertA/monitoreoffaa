@@ -33,6 +33,14 @@ import Vue from 'vue'
             component: require('./components/ModoPagoServicios/Index.vue').default
         },
 
+
+
+        {
+            path: '/ceo',
+            name: 'CeoTotal',
+            component: require('./components/Unidades/Ceo.vue').default
+        },
+
         // ACCESO AL SISTEMA
         {
             path: '/usu',
