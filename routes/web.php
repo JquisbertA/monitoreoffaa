@@ -123,6 +123,29 @@ Route::post('/activarRol', 'RoleController@activarRol');
 
 Route::get('/listarRoles','RoleController@ListarRoles');
 
+// PERSONAL
+Route::post('/listarPersonal', 'PersonalController@ListarPersonal');
+Route::post('/crearPersonal', 'PersonalController@CrearPersonal');
+
+
+// FUERZA
+Route::post('/listarFuerza', 'FuerzaController@ListarFuerza');
+
+// ESCALAFON
+Route::post('/listarEscalafon', 'EscalafonController@ListarEscalafon');
+
+// GRADO
+Route::post('/listarGrado', 'GradoController@ListarGrado');
+
+// ESPECIALIDAD
+Route::post('/listarEspecialidad', 'EspecialidadController@ListarEspecialidad');
+
+// ARMA
+Route::post('/listarArma', 'ArmaController@ListarArma');
+
+
+
+
 
 Route::get('/{optional?}', function () {
     return view('theme.app');

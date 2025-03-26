@@ -115,5 +115,14 @@ import Vue from 'vue'
                 }
             }
         },
+
+        /*******************PERSONAL************************* */
+        {
+            path: '/personal',
+            name: 'Personal',
+            component: require('./components/Personal/listPersonal.vue').default,
+            /* beforeEnter: [auth, can('ver usuarios')] */
+        },
+
     ]
 })
