@@ -25,24 +25,24 @@
       <div class="menu_section">
         <h3>General</h3>
         <ul class="nav side-menu">
-          <li><a><i class="fa fa-home"></i>Contrato de Servicio</a>
+          <li><a href="/" class="nav-link active"><i class="fa fa-home"></i>Inicio</a>
           </li>
-          <li><a><i class="fa fa-desktop"></i> Configuracion <span class="fa fa-chevron-down"></span></a>
+          <li><a><i class="fa fa-users"></i> Personal <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
               <li>
                 <router-link class="nav-link" to='/grupoServicio'>
-                  <p class="mb-0">Grupo Servicios</p>
+                  <p class="mb-0">Personal</p>
                 </router-link>
               </li>
               <li>
                 <router-link class="nav-link" to='/empresaServicio'>
-                  <p class="mb-0">Empresas Servicios</p>
+                  <p class="mb-0">Unidades</p>
                 </router-link>
               </li>
               <li><a href="widgets.html">Tipo Servicio</a></li>
               <li>
                 <router-link class="nav-link" to='/modoPagoServicio'>
-                  <p class="mb-0">Modos de Pago</p>
+                  <p class="mb-0">Incidentes</p>
                 </router-link>
               </li>
               <li><a href="icons.html">Unidades</a></li>
@@ -52,7 +52,29 @@
               <li><a href="calendar.html">Otros</a></li>
             </ul>
           </li>
-          <li><a><i class="fa fa-edit"></i> Reportes <span class="fa fa-chevron-down"></span></a>
+          <li><a><i class="fa fa-list"></i> Unidades <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li>
+                <router-link class="nav-link" to='/ceo'>CEO's</router-link>
+              </li>
+              <li><a href="form_advanced.html">Reporte 2</a></li>
+              <li><a href="form_validation.html">Reporte 3</a></li>
+              <li><a href="form_wizards.html">Reporte 4</a></li>
+              <li><a href="form_upload.html">Reporte 5</a></li>
+              <li><a href="form_buttons.html">Reporte 6</a></li>
+            </ul>
+          </li>
+          <li><a><i class="fa fa-warning"></i> Incidentes <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="form.html">Reporte 1</a></li>
+              <li><a href="form_advanced.html">Reporte 2</a></li>
+              <li><a href="form_validation.html">Reporte 3</a></li>
+              <li><a href="form_wizards.html">Reporte 4</a></li>
+              <li><a href="form_upload.html">Reporte 5</a></li>
+              <li><a href="form_buttons.html">Reporte 6</a></li>
+            </ul>
+          </li>
+          <li><a><i class="fa fa-print"></i> Reportes <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
               <li><a href="form.html">Reporte 1</a></li>
               <li><a href="form_advanced.html">Reporte 2</a></li>
@@ -70,9 +92,18 @@
         <ul class="nav side-menu">
           <li><a><i class="fa fa-user-times"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
-              <li><a href="profile.html">Usuario</a></li>
-              <li><a href="contacts.html">Roles</a></li>
-              <li><a href="project_detail.html">Permisos</a></li>
+              <li>
+                <router-link class="nav-link" to='/usu'>Usuarios</router-link>
+              </li>
+              <li>
+                <router-link class="nav-link" to='/lrol'>Roles</router-link>
+              </li>
+              <li>
+                <router-link class="nav-link" to='/per'>Permisos</router-link>
+              </li>
+              <li>
+                <router-link class="nav-link" to='/mod'>Modulos</router-link>
+              </li>
             </ul>
           </li>
 

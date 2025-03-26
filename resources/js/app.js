@@ -7,12 +7,26 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+
+//import Auth from './Auth'
+
+/* Vue.prototype.$auth = new Auth(window.user);
+console.log( window.user); */
 /**
-	 * Vue Router
-	 */
+ * Sweet Alert
+ */
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+
+/**
+ * Vue Router
+ */
 import router from './routes'
 
 
+
+/* Vue.prototype.$auth = new Auth(window.user);
+console.log( window.user); */
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -24,8 +38,8 @@ import router from './routes'
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-//Vue.component('app-component', require('./components/Plantilla.vue').default);
-Vue.component('app', require('./components/App.vue').default);
+Vue.component('App', require('./components/App.vue').default);
+Vue.component('Auth', require('./components/Auth.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
