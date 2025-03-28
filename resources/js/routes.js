@@ -73,6 +73,19 @@ import Vue from 'vue'
         },
 
 
+        
+
+
+
+
+
+
+
+        {
+            path: '/incidente',
+            name: 'Incidente',
+            component: require('./components/Incidente/Index.vue').default
+        },
 
         /******************* ROLES************************* */
         {
