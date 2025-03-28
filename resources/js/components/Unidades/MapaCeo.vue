@@ -25,7 +25,6 @@
       </div>
     </div>
 
-      
     <!-- Modal actualizado para incluir imagen -->
     <div v-if="showLocationModal" class="modal fade show" style="display: block;">
       <div class="modal-dialog">
@@ -42,56 +41,44 @@
               <label>Descripción</label>
               <textarea v-model="currentLocation.description" class="form-control"></textarea>
             </div>
+
             <div class="form-group">
               <label>Imagen</label>
               <input type="file" ref="imageInput" @change="handleImageUpload" class="form-control">
               <img v-if="currentLocation.image_url" :src="currentLocation.image_url" 
                   style="max-width: 100px; margin-top: 10px;">
             </div>
-          </div>
-          <div class="modal-footer">
-            <button @click="showLocationModal = false" class="btn btn-secondary">Cancelar</button>
-            <button @click="saveLocation" class="btn btn-primary">Guardar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal actualizado para incluir imagen -->
-    <div v-if="showLocationModal" class="modal fade show" style="display: block;">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">{{ editingLocation ? 'Editar' : 'Añadir' }} Localización</h5>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <label>Nombre</label>
-              <input v-model="currentLocation.name" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Descripción</label>
-              <textarea v-model="currentLocation.description" class="form-control"></textarea>
-            </div>
-
-            <div v-if="currentLocation.image_url && !currentLocation.remove_image">
-              <img :src="currentLocation.image_url" style="max-height: 100px;">
-              <button @click="removeExistingImage" type="button">
+            <!-- Mostrar imagen actual si existe -->
+            <div v-if="currentLocation.image_url && !currentLocation.image && !currentLocation.remove_image">
+              <img :src="currentLocation.image_url" style="max-width: 100px; margin-top: 10px;">
+              <button @click="removeExistingImage" type="button" class="btn btn-sm btn-danger mt-2">
                 Eliminar imagen
               </button>
             </div>
-            <div class="form-group">
-              <label>Imagen</label>
-              <input type="file" ref="imageInput" @change="handleImageUpload" class="form-control">
-              <img v-if="currentLocation.image_url" :src="currentLocation.image_url" 
-                  style="max-width: 100px; margin-top: 10px;">
+            
+            <!-- Mostrar vista previa de nueva imagen -->
+            <div v-if="currentLocation.image">
+              <img :src="currentLocation.image_url" style="max-width: 100px; margin-top: 10px;">
+              <button @click="cancelImageChange" type="button" class="btn btn-sm btn-secondary mt-2">
+                Cancelar cambio
+              </button>
+            </div>
+            
+            <!-- Mostrar mensaje si se eliminó la imagen -->
+            <div v-if="currentLocation.remove_image" class="text-danger mt-2">
+              Imagen marcada para eliminación
+              <button @click="undoRemoveImage" type="button" class="btn btn-sm btn-link">
+                Deshacer
+              </button>
             </div>
 
 
           </div>
           <div class="modal-footer">
             <button @click="showLocationModal = false" class="btn btn-secondary">Cancelar</button>
-            <button @click="updateMarker" class="btn btn-primary">Guardar</button>
+            <button @click="editingLocation ? updateMarker() : saveLocation()" class="btn btn-primary">
+              {{ editingLocation ? 'Actualizar' : 'Guardar' }}
+            </button>
           </div>
         </div>
       </div>
@@ -201,7 +188,7 @@ export default {
     },
 
     getPopupContent(location) {
-      const imageUrl = location.image_path || location.image_url;
+      const imageUrl = location.image_url || location.image_path;
       return `
         <div style="
           text-align: center; 
@@ -272,66 +259,94 @@ export default {
         this.currentLocation = { 
           ...location,
           image: null,
-          image_url: location.image_path || null,
-          remove_image: false
+          image_url: location.image_path 
+            ? `${window.location.origin}/storage/${location.image_path.replace('storage/', '')}`
+            : null,
+          original_image: location.image_path, // Guardar referencia original
+          remove_image: false // Resetear bandera de eliminación
         };
         this.editingLocation = location;
         this.showLocationModal = true;
         
-        // Centrar el mapa en el marcador
-        this.map.flyTo([location.lat, location.lng], this.map.getZoom(), {
-          duration: 0.5
-        });
+        this.map.flyTo([location.lat, location.lng], this.map.getZoom());
       }
     },
 
-    removeExistingImage() {
+    removeImage() {
       this.currentLocation.image_url = null;
+      this.currentLocation.original_image = null;
       this.currentLocation.remove_image = true;
-      this.$toast.info('Imagen marcada para eliminar');
     },
-
+    
+    removeExistingImage() {
+      this.currentLocation.remove_image = true;
+      this.currentLocation.image = null;
+      this.$refs.imageInput.value = '';
+    },
+    
+    undoRemoveImage() {
+      this.currentLocation.remove_image = false;
+    },
+    
+    cancelImageChange() {
+      this.currentLocation.image = null;
+      this.currentLocation.image_url = this.currentLocation.original_image 
+        ? `${window.location.origin}/storage/${this.currentLocation.original_image.replace('storage/', '')}`
+        : null;
+      this.$refs.imageInput.value = '';
+    },
+    
     handleImageUpload(event) {
       const file = event.target.files[0];
       if (file) {
         this.currentLocation.image = file;
         this.currentLocation.image_url = URL.createObjectURL(file);
+        this.currentLocation.remove_image = false;
       }
     },
 
     async saveLocation() {
-      console.log("Guardando ubicación:", this.currentLocation);
-console.log("Método:", method);
-console.log("URL:", url);
-
-      const formData = new FormData();
-      formData.append('name', this.currentLocation.name);
-      formData.append('description', this.currentLocation.description);
-      formData.append('lat', this.currentLocation.lat);
-      formData.append('lng', this.currentLocation.lng);
-      
-      if (this.currentLocation.image) {
-        formData.append('image', this.currentLocation.image);
-      }
-
       try {
+        const formData = new FormData();
+        formData.append('name', this.currentLocation.name);
+        formData.append('description', this.currentLocation.description);
+        formData.append('lat', this.currentLocation.lat);
+        formData.append('lng', this.currentLocation.lng);
+        
+        if (this.currentLocation.image) {
+          formData.append('image', this.currentLocation.image);
+        }
+        else if (this.currentLocation.image_url && !this.currentLocation.remove_image) {
+          formData.append('keep_image', 'true');
+        }
+
         const url = this.editingLocation 
-          ? `/locations/${this.editingLocation.id}`
-          : '/locations';
+        ? `/locations/${this.editingLocation.id}`
+        : '/locations';
+
         
-        const method = this.editingLocation ? 'put' : 'post';
+        const method = this.editingLocation ? 'put' : 'post'; // Siempre POST pero con _method PUT
         
-        await axios[method](url, formData, {
+        const response = await axios[method](url, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
+
+        if (this.editingLocation) {
+          await Swal.fire('¡Éxito!', 'Marcador actualizado correctamente', 'success');
+          
+        } else {
+          alert('Marcador creado correctamente');
+          // o console.log('Marcador creado');
+        }
         
-        this.loadLocations(); // Recargar los datos
+        this.loadLocations();
         this.showLocationModal = false;
         this.resetCurrentLocation();
       } catch (error) {
         console.error('Error saving location:', error);
+        await Swal.fire('Error', error.response?.data?.message || 'Error al guardar', 'error');
       }
     },
 
@@ -379,19 +394,20 @@ console.log("URL:", url);
     },
 
     async updateMarker() {
-      console.log("Guardando ubicación:", this.currentLocation);
-console.log("Método:", method);
-console.log("URL:", url);
-
       try {
         // Validación básica
         if (!this.currentLocation.name || !this.currentLocation.lat || !this.currentLocation.lng) {
-          this.$toast.warning('Por favor complete todos los campos requeridos');
+          await Swal.fire({
+            icon: 'warning',
+            title: 'Campos incompletos',
+            text: 'Por favor complete todos los campos requeridos',
+            confirmButtonText: 'Entendido'
+          });
           return;
         }
 
         const formData = new FormData();
-        formData.append('_method', 'PUT'); // Cambiado a PUT (correcto para actualización)
+        formData.append('_method', 'PUT');
         formData.append('name', this.currentLocation.name);
         formData.append('description', this.currentLocation.description || '');
         formData.append('lat', this.currentLocation.lat);
@@ -401,85 +417,121 @@ console.log("URL:", url);
           formData.append('image', this.currentLocation.image);
         }
 
-        // Bandera para eliminar imagen existente
         if (this.currentLocation.remove_image) {
-          formData.append('remove_image', 'true'); // Enviar como string
+          formData.append('remove_image', 'true');
         }
 
-        // Cambiar a PUT o PATCH según tu ruta Laravel
-        const response = await axios.post(
-          `/mapa-ceos/${this.editingLocation.id}`, // Asegúrate que la ruta coincida
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        );
+        // Mostrar loader
+        Swal.fire({
+          title: 'Actualizando marcador',
+          html: 'Por favor espere...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
 
-        // Configurar icono seguro
-        const defaultIcon = new L.Icon.Default();
+        const response = await axios.post(`/locations/${this.editingLocation.id}`, formData, {
+          headers: {'Content-Type': 'multipart/form-data'}
+        });
 
-        // Actualización local sin recargar
+        // Actualizar los datos localmente
+        const updatedLocation = response.data;
         const index = this.locations.findIndex(l => l.id === this.editingLocation.id);
         if (index !== -1) {
-          this.locations[index] = response.data;
-          
-          // Actualizar marcador en el mapa
-          const markerIndex = this.markers.findIndex(m => m.locationId === this.editingLocation.id);
-          if (markerIndex !== -1) {
-            this.map.removeLayer(this.markers[markerIndex]);
-            
+          this.locations[index] = updatedLocation;
+        }
 
-            const newMarker = L.marker(
-              [response.data.lat, response.data.lng],
-              { 
-                icon: new L.Icon.Default() // Usa el icono configurado
-              }
-            )
-            .bindPopup(this.getPopupContent(response.data))
-            .addTo(this.map);
-            
-            newMarker.locationId = response.data.id;
-            this.markers[markerIndex] = newMarker;
-          }
+        // Actualizar el marcador en el mapa
+        const markerIndex = this.markers.findIndex(m => m.locationId === this.editingLocation.id);
+        if (markerIndex !== -1) {
+          this.map.removeLayer(this.markers[markerIndex]);
+          
+          const newMarker = L.marker(
+            [updatedLocation.lat, updatedLocation.lng],
+            { icon: new L.Icon.Default() }
+          );
+          
+          // Asignar el popup correctamente
+          newMarker.bindPopup(this.getPopupContent(updatedLocation));
+          newMarker.addTo(this.map);
+          newMarker.locationId = updatedLocation.id;
+          this.markers[markerIndex] = newMarker;
+          
+          // Abrir el popup para verificar
+          newMarker.openPopup();
         }
 
         // Cerrar modal y resetear
         this.showLocationModal = false;
         this.resetCurrentLocation();
-        this.$toast.success('Marcador actualizado correctamente');
+
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Actualizado!',
+          text: 'Marcador actualizado correctamente',
+          confirmButtonText: 'Aceptar',
+          timer: 2000
+        });
+
       } catch (error) {
-        console.error('Error completo:', error);
-        this.$toast.error(error.response?.data?.message || 'Error al actualizar');
+        console.error('Error al actualizar:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.response?.data?.message || 'Error al actualizar el marcador',
+          confirmButtonText: 'Entendido'
+        });
       }
     },
 
     async deleteMarker(id) {
-      if (confirm('¿Estás seguro de que quieres eliminar este marcador?')) {
-        try {
+      try {
+        const result = await Swal.fire({
+          title: '¿Estás seguro?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancelar'
+        });
+        
+        if (result.isConfirmed) {
           await axios.delete(`/locations/${id}`);
           
           // Eliminar el marcador del mapa
           const markerIndex = this.markers.findIndex(m => m.locationId === id);
-          if (markerIndex !== -1) {
-            this.map.removeLayer(this.markers[markerIndex]);
-            this.markers.splice(markerIndex, 1);
-          }
+              if (markerIndex !== -1) {
+                this.map.removeLayer(this.markers[markerIndex]);
+                this.markers.splice(markerIndex, 1);
+              }
+              
+              // Eliminar la ubicación del array
+              const locationIndex = this.locations.findIndex(l => l.id === id);
+              if (locationIndex !== -1) {
+                this.locations.splice(locationIndex, 1);
+              }
           
-          // Eliminar la ubicación del array
-          const locationIndex = this.locations.findIndex(l => l.id === id);
-          if (locationIndex !== -1) {
-            this.locations.splice(locationIndex, 1);
-          }
-          
-          this.$toast.success('Marcador eliminado correctamente');
-        } catch (error) {
-          console.error('Error al eliminar el marcador:', error);
-          this.$toast.error('Error al eliminar el marcador');
+          await Swal.fire(
+            '¡Eliminado!',
+            'El marcador ha sido eliminado.',
+            'success'
+          );
         }
+      } catch (error) {
+        console.error('Error al eliminar el marcador:', error);
+        await Swal.fire(
+          'Error',
+          'No se pudo eliminar el marcador: ' + (error.response?.data?.message || error.message),
+          'error'
+        );
       }
     }
+
+
+
+
+
   },
 }
 </script>
