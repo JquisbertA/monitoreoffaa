@@ -78,7 +78,7 @@ Route::post('/unidades/estadoPeqUni', 'PeqUnidadController@CambioEstado');
 Route::get('/locations', 'MapaCeoController@index');
 Route::post('/locations', 'MapaCeoController@store');
 Route::delete('/locations/{id}', 'MapaCeoController@destroy')->name('locations.destroy');
-Route::put('/mapa-ceos/{mapaCeo}', 'MapaCeoController@update');
+Route::put('/locations/{id}', 'MapaCeoController@update');
 
 // USUARIOS
 Route::post('/usuario/CrearUsuario','UserController@CrearUsuario');

@@ -79,47 +79,50 @@ class MapaCeoController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, MapaCeo $mapaCeo) // Cambiado el nombre del parámetro
+    public function update(Request $request, $id)
     {
+        $location = MapaCeo::findOrFail($id);
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_image' => 'sometimes|string' // Cambiado a string
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        // Convertir remove_image a booleano
-        $removeImage = filter_var($request->input('remove_image', false), FILTER_VALIDATE_BOOLEAN);
-
-        // Eliminar imagen si se solicita
-        if ($removeImage && $mapaCeo->image_path) {
-            Storage::delete(str_replace('storage/', 'public/', $mapaCeo->image_path));
-            $validated['image_path'] = null;
-        }
-
-        // Manejar nueva imagen
+        // Manejo de imágenes
         if ($request->hasFile('image')) {
             // Eliminar imagen anterior si existe
-            if ($mapaCeo->image_path) {
-                Storage::delete(str_replace('storage/', 'public/', $mapaCeo->image_path));
+            if ($location->image_path) {
+                Storage::delete(str_replace('storage/', 'public/', $location->image_path));
             }
             
-            $path = $request->file('image')->store('public/mapa_ceos');
-            $validated['image_path'] = str_replace('public/', 'storage/', $path);
+            $path = $request->file('image')->store('public/locations');
+            $location->image_path = str_replace('public/', 'storage/', $path);
+        }
+        elseif ($request->input('keep_image') === 'true') {
+            // Mantener la imagen existente (no hacer nada)
+        }
+        else {
+            // Eliminar imagen si no se está manteniendo y no se subió nueva
+            if ($location->image_path) {
+                Storage::delete(str_replace('storage/', 'public/', $location->image_path));
+                $location->image_path = null;
+            }
         }
 
-        // Actualizar el modelo
-        $mapaCeo->update($validated);
+        $location->fill($validated);
+        $location->save();
 
         return response()->json([
-            'id' => $mapaCeo->id,
-            'name' => $mapaCeo->name,
-            'description' => $mapaCeo->description,
-            'lat' => $mapaCeo->lat,
-            'lng' => $mapaCeo->lng,
-            'image_url' => $mapaCeo->image_path ? asset($mapaCeo->image_path) : null
+            'id' => $location->id,
+            'name' => $location->name,
+            'description' => $location->description,
+            'lat' => $location->lat,
+            'lng' => $location->lng,
+            'image_path' => $location->image_path,
+            'image_url' => $location->image_path ? asset($location->image_path) : null
         ]);
     }
 
