@@ -46,12 +46,21 @@
                     <tr class="even pointer" v-for="l in lista">
                       <td class=" ">{{ l.descripcion }}</td>
                       <td class=" ">{{ l.codigo }}</td>
-                      <template v-if="l.estado == 1">
-                        <td style="width: 100px;"><div><span class="badge badge-success">Activo</span></div></td>
+                      <template v-if="l.estado == 'abierto'">
+                        <td style="width: 100px;"><div><span class="badge badge-success">Abierto</span></div></td>
                       </template>
-                      <template v-else>
-                        <td style="width: 100px;"><div><span class="badge badge-danger">Inactivo</span></div></td>
+                      <template v-if="l.estado == 'en_progreso'">
+                        <td style="width: 100px;"><div><span class="badge badge-danger">En Progreso</span></div></td>
                       </template>
+
+                  
+                      <template v-if="l.estado == 'Cerrado'">
+                        <td style="width: 100px;"><div><span class="badge badge-warning">Cerrado</span></div></td>
+                      </template>
+
+
+
+                      
                       <td class="a-center ">
                         <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(l.id)"><i class="fa fa-edit"></i></button>
                       <button type="button" class="btn btn-danger btn-sm" v-if="l.estado == 1" v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-trash"></i></button>
@@ -226,6 +235,7 @@
       },
 
       AbrirModal(){
+       
         $('#form_incidente').modal('show');
       },
 
@@ -237,16 +247,14 @@
           descripcion: me.descripcion,
      
           id_ceo: me.id_ceo,
-          coordenadas_incidente : me.  coordenadas_incidente,
-
-
-          
+          coordenadas_incidente : me.coordenadas_incidente,
 
         })
         .then(function (response) {
           //Respuesta de la peticion
           console.log(response);
           $('#form_incidente').modal('hide');
+      
           me.Listar();
         })
         .catch(function (error) {

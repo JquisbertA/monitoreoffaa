@@ -152,6 +152,53 @@ Route::get('/reporte_personal', 'ReporteController@ReportePersonal');
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::post('/listarIncidente', 'IncidenteController@Listar');
+Route::post('/guardarIncidente', 'IncidenteController@Guardar');
 Route::get('/{optional?}', function () {
     return view('theme.app');
 })->name('basepath')

@@ -40,7 +40,7 @@ class IncidenteController extends Controller
 
      public function Guardar(Request $request)
      {
-        var_dump($request);
+       
 
 
          Incidente::create([
@@ -48,7 +48,9 @@ class IncidenteController extends Controller
              'tipo' =>$request->tipo,
              'descripcion' =>$request->descripcion,
              'id_ceo' =>$request->id_ceo,
-           
+             'coordenadas_incidente' =>$request->coordenadas_incidente,
+
+             
              'sysuser'       =>'SYSTEM'
          ]);
  
