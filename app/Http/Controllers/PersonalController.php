@@ -35,9 +35,41 @@ class PersonalController extends Controller
         ]);
     }
 
-    public function EditarPersonal(Request $request) //BASE
+    public function DatosPersonal(Request $request) //BASE
     {
+        $id = $request->id;
         
+        $personal = DB::table('personal as p')
+                ->join('fuerza as f', 'p.id_fuerza', 'f.id')
+                ->join('escalafon as e', 'p.id_escalafon', 'e.id')
+                ->join('grado as g', 'p.id_grado', 'g.id')
+                ->join('especialidad as es', 'p.id_especialidad', 'es.id')
+                ->join('arma as a', 'p.id_arma', 'a.id')
+                ->select('p.id as perid',
+                        'f.id as fuerzaid', 
+                        'f.fuerza', 
+                        'f.abreviatura as fuerzaabreviatura',
+                        'e.id as escalafonid',
+                        'e.escalafon',
+                        'g.id as gradoid',
+                        'g.grado',
+                        'g.abreviatura',
+                        'es.id as especialidadid',
+                        'es.especialidad',
+                        'a.id as armaid',
+                        'a.arma',
+                        'p.nombre',
+                        'p.ap_paterno',
+                        'p.ap_materno',
+                        'p.ci',
+                        'p.cm')
+                // ->where('estado', 1)
+                ->where('p.id', $id)
+                ->orderBy('p.ap_paterno', 'asc')
+                ->orderBy('p.ap_materno', 'asc')
+                ->orderBy('p.nombre', 'asc')
+                ->get();
+                return ['personal' => $personal];
     }
 
     public function EliminarPersonal(Request $request) //BASE
@@ -58,6 +90,7 @@ class PersonalController extends Controller
                 ->select('p.id as perid',
                         'f.id as fuerzaid', 
                         'f.fuerza', 
+                        'f.abreviatura as fuerzaabreviatura',
                         'e.id as escalafonid',
                         'e.escalafon',
                         'g.id as gradoid',

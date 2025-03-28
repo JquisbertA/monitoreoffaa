@@ -126,6 +126,7 @@ Route::get('/listarRoles','RoleController@ListarRoles');
 // PERSONAL
 Route::post('/listarPersonal', 'PersonalController@ListarPersonal');
 Route::post('/crearPersonal', 'PersonalController@CrearPersonal');
+Route::post('/datosPersonal', 'PersonalController@DatosPersonal');
 
 
 // FUERZA
@@ -143,6 +144,9 @@ Route::post('/listarEspecialidad', 'EspecialidadController@ListarEspecialidad');
 
 // ARMA
 Route::post('/listarArma', 'ArmaController@ListarArma');
+
+// REPORTE
+Route::get('/reporte_personal', 'ReporteController@ReportePersonal');
 
 
 

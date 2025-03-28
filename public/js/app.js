@@ -2582,6 +2582,7 @@ __webpack_require__.r(__webpack_exports__);
       arrayGrado: [],
       arrayEspecialidad: [],
       arrayArma: [],
+      arrayPersonalE: [],
       buscar: '',
       //modal registro
       descripcion: '',
@@ -2731,22 +2732,25 @@ __webpack_require__.r(__webpack_exports__);
       });
       console.log('descrip:' + this.ap_paterno + ', obs:' + this.ap_materno);
     },
-    AbrirModalEdit: function AbrirModalEdit(id) {
+    ModalDatos: function ModalDatos(id) {
       console.log(id);
       var me = this;
-      me.idE = id; //llamamos al id global
-      axios.post("/datosGrupServ", {
+      // idper = id; //llamamos al id global
+      axios.post("/datosPersonal", {
         id: id
       }).then(function (response) {
         //Respuesta de la peticion
         console.log(response);
-        me.descripcionE = response.data.descripcion;
-        me.observacionesE = response.data.observaciones;
-        $('#pruebaedit').modal('show');
+        me.arrayPersonalE = response.data.personal;
+        // me.observacionesE = response.data.observaciones;
+        $('#editar').modal('show');
       })["catch"](function (error) {
         // handle error
         console.log(error);
       });
+    },
+    ReportePersonal: function ReportePersonal(id) {
+      window.open('http://127.0.0.1:8000/reporte_personal?id=' + id);
     },
     EditarDatos: function EditarDatos() {
       //console.log('ya funciona el boton');
@@ -5845,7 +5849,7 @@ var render = function render() {
       staticClass: "even pointer"
     }, [_c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(p.fuerza))]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(p.fuerzaabreviatura))]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(p.abreviatura))]), _vm._v(" "), _c("td", {
       staticClass: ""
@@ -5854,6 +5858,10 @@ var render = function render() {
     }, [_vm._v(_vm._s(p.ap_paterno))]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(p.ap_materno))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(p.ci))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(p.cm))]), _vm._v(" "), _c("td", {
       staticClass: "a-center"
     }, [_c("button", {
       staticClass: "btn btn-warning btn-sm",
@@ -5862,11 +5870,23 @@ var render = function render() {
       },
       on: {
         click: function click($event) {
-          return _vm.AbrirModalEdit(p.perid);
+          return _vm.ModalDatos(p.perid);
         }
       }
     }, [_c("i", {
       staticClass: "fa fa-edit"
+    })]), _vm._v(" "), _c("button", {
+      staticClass: "btn btn-warning btn-sm",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.ReportePersonal(p.perid);
+        }
+      }
+    }, [_c("i", {
+      staticClass: "fa fa-file"
     })])])]);
   }), 0)])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal",
@@ -6160,10 +6180,10 @@ var render = function render() {
     staticClass: "modal",
     attrs: {
       tabindex: "-1",
-      id: "pruebaedit"
+      id: "editar"
     }
   }, [_c("div", {
-    staticClass: "modal-dialog"
+    staticClass: "modal-dialog modal-lg"
   }, [_c("div", {
     staticClass: "modal-content"
   }, [_vm._m(5), _vm._v(" "), _c("div", {
@@ -6172,51 +6192,261 @@ var render = function render() {
     staticClass: "form-horizontal form-label-left"
   }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Fuerza")]), _vm._v(" "), _c("v-select", {
+    staticStyle: {
+      "text-transform": "uppercase"
+    },
+    attrs: {
+      label: "fuerza",
+      options: _vm.arrayFuerza
+    },
+    on: {
+      input: function input($event) {
+        ;
+        _vm.grado = null, _vm.ListarGrado(), _vm.especialidad = null, _vm.ListarEspecialidad(), _vm.arma = null, _vm.ListarArma();
+      }
+    },
+    scopedSlots: _vm._u([{
+      key: "no-options",
+      fn: function fn(_ref6) {
+        var search = _ref6.search,
+          searching = _ref6.searching;
+        return [searching ? [_vm._v("\n                            Lo sentimos, no hay opciones de coincidencia para "), _c("em", [_vm._v(_vm._s(search))]), _vm._v(".\n                        ")] : _c("em", [_vm._v("Lo sentimos, no hay opciones de coincidencia.")])];
+      }
+    }]),
+    model: {
+      value: _vm.fuerza,
+      callback: function callback($$v) {
+        _vm.fuerza = $$v;
+      },
+      expression: "fuerza"
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Escalafon")]), _vm._v(" "), _c("v-select", {
+    staticStyle: {
+      "text-transform": "uppercase"
+    },
+    attrs: {
+      label: "escalafon",
+      options: _vm.arrayEscalafon
+    },
+    scopedSlots: _vm._u([{
+      key: "no-options",
+      fn: function fn(_ref7) {
+        var search = _ref7.search,
+          searching = _ref7.searching;
+        return [searching ? [_vm._v("\n                            Lo sentimos, no hay opciones de coincidencia para "), _c("em", [_vm._v(_vm._s(search))]), _vm._v(".\n                        ")] : _c("em", [_vm._v("Lo sentimos, no hay opciones de coincidencia.")])];
+      }
+    }]),
+    model: {
+      value: _vm.escalafon,
+      callback: function callback($$v) {
+        _vm.escalafon = $$v;
+      },
+      expression: "escalafon"
+    }
+  })], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Grado")]), _vm._v(" "), _c("v-select", {
+    staticStyle: {
+      "text-transform": "uppercase"
+    },
+    attrs: {
+      label: "abreviatura",
+      options: _vm.arrayGrado
+    },
+    scopedSlots: _vm._u([{
+      key: "no-options",
+      fn: function fn(_ref8) {
+        var search = _ref8.search,
+          searching = _ref8.searching;
+        return [searching ? [_vm._v("\n                            Lo sentimos, no hay opciones de coincidencia para "), _c("em", [_vm._v(_vm._s(search))]), _vm._v(".\n                        ")] : _c("em", [_vm._v("Lo sentimos, no hay opciones de coincidencia.")])];
+      }
+    }]),
+    model: {
+      value: _vm.grado,
+      callback: function callback($$v) {
+        _vm.grado = $$v;
+      },
+      expression: "grado"
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Especialidad")]), _vm._v(" "), _c("v-select", {
+    staticStyle: {
+      "text-transform": "uppercase"
+    },
+    attrs: {
+      label: "abreviatura",
+      options: _vm.arrayEspecialidad
+    },
+    scopedSlots: _vm._u([{
+      key: "no-options",
+      fn: function fn(_ref9) {
+        var search = _ref9.search,
+          searching = _ref9.searching;
+        return [searching ? [_vm._v("\n                            Lo sentimos, no hay opciones de coincidencia para "), _c("em", [_vm._v(_vm._s(search))]), _vm._v(".\n                        ")] : _c("em", [_vm._v("Lo sentimos, no hay opciones de coincidencia.")])];
+      }
+    }]),
+    model: {
+      value: _vm.especialidad,
+      callback: function callback($$v) {
+        _vm.especialidad = $$v;
+      },
+      expression: "especialidad"
+    }
+  })], 1)]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Arma")]), _vm._v(" "), _c("v-select", {
+    staticStyle: {
+      "text-transform": "uppercase"
+    },
+    attrs: {
+      label: "arma",
+      options: _vm.arrayArma
+    },
+    scopedSlots: _vm._u([{
+      key: "no-options",
+      fn: function fn(_ref10) {
+        var search = _ref10.search,
+          searching = _ref10.searching;
+        return [searching ? [_vm._v("\n                            Lo sentimos, no hay opciones de coincidencia para "), _c("em", [_vm._v(_vm._s(search))]), _vm._v(".\n                        ")] : _c("em", [_vm._v("Lo sentimos, no hay opciones de coincidencia.")])];
+      }
+    }]),
+    model: {
+      value: _vm.arma,
+      callback: function callback($$v) {
+        _vm.arma = $$v;
+      },
+      expression: "arma"
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Nombres")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.descripcionE,
-      expression: "descripcionE"
+      value: _vm.nombre,
+      expression: "nombre"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese Descripcion"
+      placeholder: "Ingrese Nombres"
     },
     domProps: {
-      value: _vm.descripcionE
+      value: _vm.nombre
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.descripcionE = $event.target.value;
+        _vm.nombre = $event.target.value;
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Apellido Paterno")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.ap_paterno,
+      expression: "ap_paterno"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Apellido Paterno"
+    },
+    domProps: {
+      value: _vm.ap_paterno
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.ap_paterno = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
-    staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Observaciones")]), _vm._v(" "), _c("input", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Apellido Materno")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.observacionesE,
-      expression: "observacionesE"
+      value: _vm.ap_materno,
+      expression: "ap_materno"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese Observacion"
+      placeholder: "Ingrese Apellido Materno"
     },
     domProps: {
-      value: _vm.observacionesE
+      value: _vm.ap_materno
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.observacionesE = $event.target.value;
+        _vm.ap_materno = $event.target.value;
       }
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Cedula de Identidad")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.ci,
+      expression: "ci"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Nro. Cedula"
+    },
+    domProps: {
+      value: _vm.ci
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.ci = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("label", [_vm._v("Carnet Militar")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.cm,
+      expression: "cm"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      placeholder: "Ingrese Nro. Carnet Militar"
+    },
+    domProps: {
+      value: _vm.cm
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.cm = $event.target.value;
+      }
+    }
+  })])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -6278,6 +6508,10 @@ var staticRenderFns = [function () {
     staticClass: "column-title"
   }, [_vm._v("Ap. Materno")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
+  }, [_vm._v("C. Identidad")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
+  }, [_vm._v("C. Militar")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
   }, [_vm._v("Acciones ")])])]);
 }, function () {
   var _vm = this,
@@ -6305,7 +6539,7 @@ var staticRenderFns = [function () {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title"
-  }, [_vm._v("Editar Servicio")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Editar Personal")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
