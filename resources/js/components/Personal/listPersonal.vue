@@ -39,16 +39,20 @@
                       <th class="column-title">Nombres</th>
                       <th class="column-title">Ap. Paterno</th>
                       <th class="column-title">Ap. Materno</th>
+                      <th class="column-title">C. Identidad</th>
+                      <th class="column-title">C. Militar</th>
                       <th class="column-title">Acciones </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="even pointer" v-for="p in arrayPersonal">
-                      <td class=" ">{{ p.fuerza }}</td>
+                      <td class=" ">{{ p.fuerzaabreviatura }}</td>
                       <td class=" ">{{ p.abreviatura }}</td>
                       <td class=" ">{{ p.nombre }}</td>
                       <td class=" ">{{ p.ap_paterno }}</td>
                       <td class=" ">{{ p.ap_materno }}</td>
+                      <td class=" ">{{ p.ci }}</td>
+                      <td class=" ">{{ p.cm }}</td>
                       <!-- <template v-if="p.estado == 1">
                         <td style="width: 100px;"><div><span class="badge badge-success">Activo</span></div></td>
                       </template>
@@ -56,7 +60,8 @@
                         <td style="width: 100px;"><div><span class="badge badge-danger">Inactivo</span></div></td>
                       </template> -->
                       <td class="a-center ">
-                        <button type="button" class="btn btn-warning btn-sm" v-on:click="AbrirModalEdit(p.perid)"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-warning btn-sm" v-on:click="ModalDatos(p.perid)"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-warning btn-sm" v-on:click="ReportePersonal(p.perid)"><i class="fa fa-file"></i></button>
                         <!-- <button type="button" class="btn btn-danger btn-sm" v-if="l.estado == 1" v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-trash"></i></button>
                         <button type="button" class="btn btn-success btn-sm" v-else v-on:click="CambiarEstado(l.estado, l.id)"><i class="fa fa-check"></i></button> -->
                       </td>
@@ -230,11 +235,11 @@
         </div>
       </div>
   
-      <div class="modal" tabindex="-1" id="pruebaedit">
-        <div class="modal-dialog">
+      <div class="modal" tabindex="-1" id="editar">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Editar Servicio</h5>
+              <h5 class="modal-title">Editar Personal</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -242,12 +247,144 @@
             <div class="modal-body">
               <form class="form-horizontal form-label-left">
                 <div class="form-group row">
-                  <label>Descripción</label>
-                  <input type="text" class="form-control" placeholder="Ingrese Descripcion" v-model="descripcionE">
+                    <div class="col-md-6">
+                        <label>Fuerza</label>
+                        <!-- <select class="form-control" v-model="fuerza">
+                            <option value="" disabled>Seleccione Fuerza</option>
+                            <option v-for="fuerza in arrayFuerza" :key="fuerza.id" :value="fuerza.id" v-text="fuerza.fuerza"></option>                        
+                        </select> -->
+                        <v-select
+                            label="fuerza"
+                            :options="arrayFuerza"
+                            v-model="fuerza"
+                            @input="grado = null, ListarGrado(), especialidad = null, ListarEspecialidad(), arma = null, ListarArma()"
+                            style="text-transform:uppercase;"
+                        >
+                            <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Lo sentimos, no hay opciones de coincidencia para <em>{{
+                                search
+                                }}</em
+                                >.
+                            </template>
+                            <em v-else
+                                >Lo sentimos, no hay opciones de coincidencia.</em
+                            >
+                            </template>
+                        </v-select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Escalafon</label>
+                        <v-select
+                            label="escalafon"
+                            :options="arrayEscalafon"
+                            v-model="escalafon"
+                            style="text-transform:uppercase;"
+                        >
+                            <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Lo sentimos, no hay opciones de coincidencia para <em>{{
+                                search
+                                }}</em
+                                >.
+                            </template>
+                            <em v-else
+                                >Lo sentimos, no hay opciones de coincidencia.</em
+                            >
+                            </template>
+                        </v-select>                   
+                    </div>
                 </div>
                 <div class="form-group row">
-                  <label>Observaciones</label>
-                  <input type="text" class="form-control" placeholder="Ingrese Observacion" v-model="observacionesE">
+                    <div class="col-md-6">
+                        <label>Grado</label>
+                        <v-select
+                            label="abreviatura"
+                            :options="arrayGrado"
+                            v-model="grado"
+                            style="text-transform:uppercase;"
+                        >
+                            <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Lo sentimos, no hay opciones de coincidencia para <em>{{
+                                search
+                                }}</em
+                                >.
+                            </template>
+                            <em v-else
+                                >Lo sentimos, no hay opciones de coincidencia.</em
+                            >
+                            </template>
+                        </v-select>                      
+                    </div>
+                    <div class="col-md-6">
+                        <label>Especialidad</label>
+                        <v-select
+                            label="abreviatura"
+                            :options="arrayEspecialidad"
+                            v-model="especialidad"
+                            style="text-transform:uppercase;"
+                        >
+                            <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Lo sentimos, no hay opciones de coincidencia para <em>{{
+                                search
+                                }}</em
+                                >.
+                            </template>
+                            <em v-else
+                                >Lo sentimos, no hay opciones de coincidencia.</em
+                            >
+                            </template>
+                        </v-select>                     
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>Arma</label>
+                        <v-select
+                            label="arma"
+                            :options="arrayArma"
+                            v-model="arma"
+                            style="text-transform:uppercase;"
+                        >
+                            <template v-slot:no-options="{ search, searching }">
+                            <template v-if="searching">
+                                Lo sentimos, no hay opciones de coincidencia para <em>{{
+                                search
+                                }}</em
+                                >.
+                            </template>
+                            <em v-else
+                                >Lo sentimos, no hay opciones de coincidencia.</em
+                            >
+                            </template>
+                        </v-select> 
+                    </div>
+                    <div class="col-md-6">
+                        <label>Nombres</label>
+                        <input type="text" class="form-control" placeholder="Ingrese Nombres" v-model="nombre">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>Apellido Paterno</label>
+                        <input type="text" class="form-control" placeholder="Ingrese Apellido Paterno" v-model="ap_paterno">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Apellido Materno</label>
+                        <input type="text" class="form-control" placeholder="Ingrese Apellido Materno" v-model="ap_materno">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label>Cedula de Identidad</label>
+                        <input type="text" class="form-control" placeholder="Ingrese Nro. Cedula" v-model="ci">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Carnet Militar</label>
+                        <input type="text" class="form-control" placeholder="Ingrese Nro. Carnet Militar" v-model="cm">
+                    </div>
                 </div>
               </form>
             </div>
@@ -282,6 +419,7 @@
             arrayGrado : [],
             arrayEspecialidad : [],
             arrayArma : [],
+            arrayPersonalE : [],
 
 
           buscar:'',
@@ -464,26 +602,29 @@
           console.log('descrip:'+this.ap_paterno+', obs:'+this.ap_materno);
         },
   
-        AbrirModalEdit(id){
+        ModalDatos(id){
           console.log(id);
           let me = this;
-          me.idE = id; //llamamos al id global
+          // idper = id; //llamamos al id global
           axios
-          .post("/datosGrupServ", {
+          .post("/datosPersonal", {
             id: id
           })
           .then(function (response) {
             //Respuesta de la peticion
             console.log(response);
-            me.descripcionE = response.data.descripcion;
-            me.observacionesE = response.data.observaciones;
-            $('#pruebaedit').modal('show');
+            me.arrayPersonalE = response.data.personal;
+            // me.observacionesE = response.data.observaciones;
+            $('#editar').modal('show');
           })
           .catch(function (error) {
             // handle error
             console.log(error);
           })
-  
+        },
+
+        ReportePersonal(id){
+          window.open('http://127.0.0.1:8000/reporte_personal?id='+id);
         },
   
         EditarDatos(){
