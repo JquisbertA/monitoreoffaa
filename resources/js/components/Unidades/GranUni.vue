@@ -36,6 +36,7 @@
                 <thead>
                   <tr class="headings">
                     <th class="column-title">CEO</th>
+                    <th class="column-title">Fuerza</th>
                     <th class="column-title">Gran Unidad</th>
                     <th class="column-title">Abreviatura</th>
                     <th class="column-title">Descripción</th>
@@ -49,10 +50,12 @@
                 <tbody>
                   <tr class="even pointer" v-for="l in lista">
                     <td class=" ">{{ l.sigla }}</td>
-                    <td class=" ">{{ l.nombre }}</td>
+                    <td class=" ">{{ l.fuerza }}</td>
+                    <td class=" ">{{ l.gran_unidad }}</td>
+                    <td class=" ">{{ l.abreviatura }}</td>
                     <td class=" ">{{ l.descripcion }}</td>
-                    <td class=" ">{{ l.region }}</td>
-                    <td class=" ">{{ l.coordenadas }}</td>
+                    <td class=" ">{{ l.lat }}</td>
+                    <td class=" ">{{ l.lng }}</td>
                     <template v-if="l.estado == 1">
                       <td style="width: 100px;"><div><span class="badge badge-success">Activo</span></div></td>
                     </template>
@@ -82,7 +85,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Registrar CEO</h5>
+            <h5 class="modal-title">Registrar Gran Unidad</h5>
             <button type="button" class="close" data-dismiss="modal" @click="cerrarModal()" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -90,24 +93,31 @@
           <div class="modal-body">
             <form class="form-horizontal form-label-left">
               <div class="form-group row">
-                <label>Nombre</label>
-                <input type="text" class="form-control" placeholder="Ingrese nombre" v-model="nombre">
+                <label>Fuerza</label>
+                <select class="form-control" v-model="idfuerza" required>
+                    <option value="0" disabled>SELECCIONE</option>
+                    <option v-for="fuerza in arrayFuerza" :key="fuerza.id" :value="fuerza.id" v-text="fuerza.fuerza"></option>
+                  </select>
               </div>
               <div class="form-group row">
-                <label>Sigla</label>
-                <input type="text" class="form-control" placeholder="Ingrese sigla" v-model="sigla">
+                <label>Gran Unidad</label>
+                <input type="text" class="form-control" placeholder="Ingrese gran unidad" v-model="gran_unidad">
+              </div>
+              <div class="form-group row">
+                <label>Abreviatura</label>
+                <input type="text" class="form-control" placeholder="Ingrese abreviatura" v-model="abreviatura">
               </div>
               <div class="form-group row">
                 <label>Descripción</label>
                 <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcion">
               </div>
               <div class="form-group row">
-                <label>Región</label>
-                <input type="text" class="form-control" placeholder="Ingrese region" v-model="region">
+                <label>Latitud</label>
+                <input type="text" class="form-control" placeholder="Ingrese latitud" v-model="latitud">
               </div>
               <div class="form-group row">
-                <label>Coordenadas</label>
-                <input type="text" class="form-control" placeholder="Ingrese coordenada" v-model="coordenada">
+                <label>Longitud</label>
+                <input type="text" class="form-control" placeholder="Ingrese longitud" v-model="longitud">
               </div>
 
             </form>
@@ -132,24 +142,31 @@
           <div class="modal-body">
             <form class="form-horizontal form-label-left">
               <div class="form-group row">
-                <label>Nombre</label>
-                <input type="text" class="form-control" placeholder="Ingrese nombre" v-model="nombreE">
+                <label>Fuerza</label>
+                <select class="form-control" v-model="idfuerza" required>
+                    <option value="0" disabled>SELECCIONE</option>
+                    <option v-for="fuerza in arrayFuerza" :key="fuerza.id" :value="fuerza.id" v-text="fuerza.fuerza"></option>
+                  </select>
               </div>
               <div class="form-group row">
-                <label>Sigla</label>
-                <input type="text" class="form-control" placeholder="Ingrese sigla" v-model="siglaE">
+                <label>Gran Unidad</label>
+                <input type="text" class="form-control" placeholder="Ingrese gran unidad" v-model="gran_unidad">
+              </div>
+              <div class="form-group row">
+                <label>Abreviatura</label>
+                <input type="text" class="form-control" placeholder="Ingrese abreviatura" v-model="abreviatura">
               </div>
               <div class="form-group row">
                 <label>Descripción</label>
-                <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcionE">
+                <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcion">
               </div>
               <div class="form-group row">
-                <label>Región</label>
-                <input type="text" class="form-control" placeholder="Ingrese region" v-model="regionE">
+                <label>Latitud</label>
+                <input type="text" class="form-control" placeholder="Ingrese latitud" v-model="latitud">
               </div>
               <div class="form-group row">
-                <label>Coordenadas</label>
-                <input type="text" class="form-control" placeholder="Ingrese coordenada" v-model="coordenadaE">
+                <label>Longitud</label>
+                <input type="text" class="form-control" placeholder="Ingrese longitud" v-model="longitud">
               </div>
             </form>
           </div>
@@ -170,25 +187,28 @@
         return {
           lista:[],
           buscar:'',
+          arrayFuerza:[],
+          idfuerza:0,
           //modal registro
-          nombre:'',
-          sigla:'',
+          gran_unidad:'',
+          abreviatura:'',
           descripcion:'',
-          region:'',
-          coordenada:'',
+          latitud:'',
+          longitud:'',
           codigo:'',
           //modal editar
-          nombreE:'',
-          siglaE:'',
+          gran_unidadE:'',
+          abreviaturaE:'',
           descripcionE:'',
-          regionE:'',
-          coordenadaE:'',
+          latitudE:'',
+          longitudE:'',
           codigoE:'',
           idE:'',
         }
       },
       mounted() {
         this.Listar();
+        
       },
       methods: {
   
@@ -200,7 +220,7 @@
           })
           .then(function (response) {
             //Respuesta de la peticion
-            //console.log(response);
+            console.log(response);
             me.lista = response.data;
   
             console.log(me.lista);
@@ -221,17 +241,19 @@
   
         AbrirModal(){
           $('#prueba').modal('show');
+          this.selectFuerza();
         },
   
         GuardarDatos(){
           let me = this;
           axios
           .post("/unidades/crearGranUni", {
-            nombre:me.nombre,
-            sigla:me.sigla,
+            id_fuerza:me.idfuerza,
+            gran_unidad:me.gran_unidad,
+            abreviatura:me.abreviatura,
             descripcion:me.descripcion,
-            region:me.region,
-            coordenada:me.coordenada
+            latitud:me.latitud,
+            longitud:me.longitud,
           })
           .then(function (response) {
             //Respuesta de la peticion
@@ -314,7 +336,24 @@
             console.log(error);
           })
   
-        }
+        },
+
+        selectFuerza(){
+          let me =this;
+          var url='/selectFuerza';
+          axios.get(url).then(function (response) {
+              var respuesta = response.data;
+              console.log(respuesta);
+              me.arrayFuerza = respuesta; 
+          })
+          .catch(function (error) {
+          // handle error
+          console.log(error);
+          })
+          .then(function () {
+          // always executed
+          });
+        },
   
   
       },

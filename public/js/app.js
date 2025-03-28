@@ -2810,19 +2810,21 @@ __webpack_require__.r(__webpack_exports__);
     return {
       lista: [],
       buscar: '',
+      arrayFuerza: [],
+      idfuerza: 0,
       //modal registro
-      nombre: '',
-      sigla: '',
+      gran_unidad: '',
+      abreviatura: '',
       descripcion: '',
-      region: '',
-      coordenada: '',
+      latitud: '',
+      longitud: '',
       codigo: '',
       //modal editar
-      nombreE: '',
-      siglaE: '',
+      gran_unidadE: '',
+      abreviaturaE: '',
       descripcionE: '',
-      regionE: '',
-      coordenadaE: '',
+      latitudE: '',
+      longitudE: '',
       codigoE: '',
       idE: ''
     };
@@ -2837,7 +2839,7 @@ __webpack_require__.r(__webpack_exports__);
         buscar: me.buscar
       }).then(function (response) {
         //Respuesta de la peticion
-        //console.log(response);
+        console.log(response);
         me.lista = response.data;
         console.log(me.lista);
       })["catch"](function (error) {
@@ -2854,15 +2856,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     AbrirModal: function AbrirModal() {
       $('#prueba').modal('show');
+      this.selectFuerza();
     },
     GuardarDatos: function GuardarDatos() {
       var me = this;
       axios.post("/unidades/crearGranUni", {
-        nombre: me.nombre,
-        sigla: me.sigla,
+        id_fuerza: me.idfuerza,
+        gran_unidad: me.gran_unidad,
+        abreviatura: me.abreviatura,
         descripcion: me.descripcion,
-        region: me.region,
-        coordenada: me.coordenada
+        latitud: me.latitud,
+        longitud: me.longitud
       }).then(function (response) {
         //Respuesta de la peticion
         console.log(response);
@@ -2926,6 +2930,20 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         // handle error
         console.log(error);
+      });
+    },
+    selectFuerza: function selectFuerza() {
+      var me = this;
+      var url = '/selectFuerza';
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        console.log(respuesta);
+        me.arrayFuerza = respuesta;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      }).then(function () {
+        // always executed
       });
     }
   }
@@ -3105,10 +3123,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     saveLocation: function saveLocation() {
       var _this4 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var formData, url, method;
+        var formData, _url, _method;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
+              console.log("Guardando ubicación:", _this4.currentLocation);
+              console.log("Método:", method);
+              console.log("URL:", url);
               formData = new FormData();
               formData.append('name', _this4.currentLocation.name);
               formData.append('description', _this4.currentLocation.description);
@@ -3117,30 +3138,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               if (_this4.currentLocation.image) {
                 formData.append('image', _this4.currentLocation.image);
               }
-              _context2.prev = 6;
-              url = _this4.editingLocation ? "/locations/".concat(_this4.editingLocation.id) : '/locations';
-              method = _this4.editingLocation ? 'put' : 'post';
-              _context2.next = 11;
-              return axios[method](url, formData, {
+              _context2.prev = 9;
+              _url = _this4.editingLocation ? "/locations/".concat(_this4.editingLocation.id) : '/locations';
+              _method = _this4.editingLocation ? 'put' : 'post';
+              _context2.next = 14;
+              return axios[_method](_url, formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }
               });
-            case 11:
+            case 14:
               _this4.loadLocations(); // Recargar los datos
               _this4.showLocationModal = false;
               _this4.resetCurrentLocation();
-              _context2.next = 19;
+              _context2.next = 22;
               break;
-            case 16:
-              _context2.prev = 16;
-              _context2.t0 = _context2["catch"](6);
-              console.error('Error saving location:', _context2.t0);
             case 19:
+              _context2.prev = 19;
+              _context2.t0 = _context2["catch"](9);
+              console.error('Error saving location:', _context2.t0);
+            case 22:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[6, 16]]);
+        }, _callee2, null, [[9, 19]]);
       }))();
     },
     resetCurrentLocation: function resetCurrentLocation() {
@@ -3188,14 +3209,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.prev = 0;
+              console.log("Guardando ubicación:", _this6.currentLocation);
+              console.log("Método:", method);
+              console.log("URL:", url);
+              _context3.prev = 3;
               if (!(!_this6.currentLocation.name || !_this6.currentLocation.lat || !_this6.currentLocation.lng)) {
-                _context3.next = 4;
+                _context3.next = 7;
                 break;
               }
               _this6.$toast.warning('Por favor complete todos los campos requeridos');
               return _context3.abrupt("return");
-            case 4:
+            case 7:
               formData = new FormData();
               formData.append('_method', 'PUT'); // Cambiado a PUT (correcto para actualización)
               formData.append('name', _this6.currentLocation.name);
@@ -3212,7 +3236,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               }
 
               // Cambiar a PUT o PATCH según tu ruta Laravel
-              _context3.next = 14;
+              _context3.next = 17;
               return axios.post("/mapa-ceos/".concat(_this6.editingLocation.id),
               // Asegúrate que la ruta coincida
               formData, {
@@ -3220,7 +3244,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   'Content-Type': 'multipart/form-data'
                 }
               });
-            case 14:
+            case 17:
               response = _context3.sent;
               // Configurar icono seguro
               defaultIcon = new leaflet__WEBPACK_IMPORTED_MODULE_0___default.a.Icon.Default(); // Actualización local sin recargar
@@ -3248,18 +3272,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               _this6.showLocationModal = false;
               _this6.resetCurrentLocation();
               _this6.$toast.success('Marcador actualizado correctamente');
-              _context3.next = 27;
+              _context3.next = 30;
               break;
-            case 23:
-              _context3.prev = 23;
-              _context3.t0 = _context3["catch"](0);
+            case 26:
+              _context3.prev = 26;
+              _context3.t0 = _context3["catch"](3);
               console.error('Error completo:', _context3.t0);
               _this6.$toast.error(((_error$response = _context3.t0.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message) || 'Error al actualizar');
-            case 27:
+            case 30:
             case "end":
               return _context3.stop();
           }
-        }, _callee3, null, [[0, 23]]);
+        }, _callee3, null, [[3, 26]]);
       }))();
     },
     deleteMarker: function deleteMarker(id) {
@@ -3327,21 +3351,28 @@ __webpack_require__.r(__webpack_exports__);
     return {
       lista: [],
       buscar: '',
+      arrayFuerza: [],
+      idfuerza: 0,
+      arrayGranunidad: [],
+      idgranunidad: 0,
       //modal registro
-      nombre: '',
-      sigla: '',
+      peq_unidad: '',
+      abreviatura: '',
       descripcion: '',
-      region: '',
-      coordenada: '',
+      latitud: '',
+      longitud: '',
       codigo: '',
+      idfuerzaE: 0,
+      idgranunidadE: 0,
       //modal editar
-      nombreE: '',
-      siglaE: '',
+      peq_unidadE: '',
+      abreviaturaE: '',
       descripcionE: '',
-      regionE: '',
-      coordenadaE: '',
+      latitudE: '',
+      longitudE: '',
       codigoE: '',
-      idE: ''
+      idE: '',
+      rowId: 0
     };
   },
   mounted: function mounted() {
@@ -3350,7 +3381,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     Listar: function Listar() {
       var me = this;
-      axios.post('/unidades/listaCeo', {
+      axios.post('/unidades/listaPeqUni', {
         buscar: me.buscar
       }).then(function (response) {
         //Respuesta de la peticion
@@ -3371,15 +3402,19 @@ __webpack_require__.r(__webpack_exports__);
     },
     AbrirModal: function AbrirModal() {
       $('#prueba').modal('show');
+      this.selectFuerza();
+      this.selectbuscarGranUnidad(this.idfuerza);
     },
     GuardarDatos: function GuardarDatos() {
       var me = this;
-      axios.post("/unidades/crearCeo", {
-        nombre: me.nombre,
-        sigla: me.sigla,
+      axios.post("/unidades/crearPeqUni", {
+        id_fuerza: me.idfuerza,
+        id_granunidad: me.idgranunidad,
+        peq_unidad: me.peq_unidad,
+        abreviatura: me.abreviatura,
         descripcion: me.descripcion,
-        region: me.region,
-        coordenada: me.coordenada
+        latitud: me.latitud,
+        longitud: me.longitud
       }).then(function (response) {
         //Respuesta de la peticion
         console.log(response);
@@ -3443,6 +3478,43 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         // handle error
         console.log(error);
+      });
+    },
+    selectFuerza: function selectFuerza() {
+      var me = this;
+      var url = '/selectFuerza';
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        console.log(respuesta);
+        me.arrayFuerza = respuesta;
+      })["catch"](function (error) {
+        // handle error
+        console.log(error);
+      }).then(function () {
+        // always executed
+      });
+    },
+    changeItem1: function changeItem1(rowId, event) {
+      this.selected = "rowId: " + rowId + ", target.value: " + event.target.value;
+      this.selectbuscarGranUnidad(event.target.value);
+    },
+    selectbuscarGranUnidad: function selectbuscarGranUnidad(dest) {
+      var me = this;
+      me.buscarD = dest;
+      me.arrayGranunidad = [];
+      //  me.prov_codigo=0;
+      var url = '/unidades/selectbuscarGranUnidad?buscar=' + dest;
+      me.selected = url;
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.arrayGranunidad = respuesta.gran_unidad;
+      })["catch"](function (error) {
+        // handle error 
+        me.selected = error;
+        console.log(error);
+      }).then(function () {
+
+        // always executed
       });
     }
   }
@@ -6332,13 +6404,17 @@ var render = function render() {
       staticClass: ""
     }, [_vm._v(_vm._s(l.sigla))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.nombre))]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.fuerza))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.gran_unidad))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.abreviatura))]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(l.descripcion))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.region))]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.lat))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.coordenadas))]), _vm._v(" "), l.estado == 1 ? [_vm._m(4, true)] : [_vm._m(5, true)], _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.lng))]), _vm._v(" "), l.estado == 1 ? [_vm._m(4, true)] : [_vm._m(5, true)], _vm._v(" "), _c("td", {
       staticClass: "a-center"
     }, [_c("button", {
       staticClass: "btn btn-warning btn-sm",
@@ -6391,7 +6467,7 @@ var render = function render() {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title"
-  }, [_vm._v("Registrar CEO")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Registrar Gran Unidad")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
@@ -6413,48 +6489,85 @@ var render = function render() {
     staticClass: "form-horizontal form-label-left"
   }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Nombre")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Fuerza")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.nombre,
-      expression: "nombre"
+      value: _vm.idfuerza,
+      expression: "idfuerza"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idfuerza = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayFuerza, function (fuerza) {
+    return _c("option", {
+      key: fuerza.id,
+      domProps: {
+        value: fuerza.id,
+        textContent: _vm._s(fuerza.fuerza)
+      }
+    });
+  })], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Gran Unidad")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.gran_unidad,
+      expression: "gran_unidad"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese nombre"
+      placeholder: "Ingrese gran unidad"
     },
     domProps: {
-      value: _vm.nombre
+      value: _vm.gran_unidad
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.nombre = $event.target.value;
+        _vm.gran_unidad = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Sigla")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Abreviatura")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.sigla,
-      expression: "sigla"
+      value: _vm.abreviatura,
+      expression: "abreviatura"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese sigla"
+      placeholder: "Ingrese abreviatura"
     },
     domProps: {
-      value: _vm.sigla
+      value: _vm.abreviatura
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.sigla = $event.target.value;
+        _vm.abreviatura = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -6482,48 +6595,48 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Región")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Latitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.region,
-      expression: "region"
+      value: _vm.latitud,
+      expression: "latitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese region"
+      placeholder: "Ingrese latitud"
     },
     domProps: {
-      value: _vm.region
+      value: _vm.latitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.region = $event.target.value;
+        _vm.latitud = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Coordenadas")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Longitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.coordenada,
-      expression: "coordenada"
+      value: _vm.longitud,
+      expression: "longitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese coordenada"
+      placeholder: "Ingrese longitud"
     },
     domProps: {
-      value: _vm.coordenada
+      value: _vm.longitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.coordenada = $event.target.value;
+        _vm.longitud = $event.target.value;
       }
     }
   })])])]), _vm._v(" "), _c("div", {
@@ -6585,48 +6698,85 @@ var render = function render() {
     staticClass: "form-horizontal form-label-left"
   }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Nombre")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Fuerza")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.nombreE,
-      expression: "nombreE"
+      value: _vm.idfuerza,
+      expression: "idfuerza"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idfuerza = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayFuerza, function (fuerza) {
+    return _c("option", {
+      key: fuerza.id,
+      domProps: {
+        value: fuerza.id,
+        textContent: _vm._s(fuerza.fuerza)
+      }
+    });
+  })], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Gran Unidad")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.gran_unidad,
+      expression: "gran_unidad"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese nombre"
+      placeholder: "Ingrese gran unidad"
     },
     domProps: {
-      value: _vm.nombreE
+      value: _vm.gran_unidad
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.nombreE = $event.target.value;
+        _vm.gran_unidad = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Sigla")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Abreviatura")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.siglaE,
-      expression: "siglaE"
+      value: _vm.abreviatura,
+      expression: "abreviatura"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese sigla"
+      placeholder: "Ingrese abreviatura"
     },
     domProps: {
-      value: _vm.siglaE
+      value: _vm.abreviatura
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.siglaE = $event.target.value;
+        _vm.abreviatura = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
@@ -6635,8 +6785,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.descripcionE,
-      expression: "descripcionE"
+      value: _vm.descripcion,
+      expression: "descripcion"
     }],
     staticClass: "form-control",
     attrs: {
@@ -6644,58 +6794,58 @@ var render = function render() {
       placeholder: "Ingrese descripcion"
     },
     domProps: {
-      value: _vm.descripcionE
+      value: _vm.descripcion
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.descripcionE = $event.target.value;
+        _vm.descripcion = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Región")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Latitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.regionE,
-      expression: "regionE"
+      value: _vm.latitud,
+      expression: "latitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese region"
+      placeholder: "Ingrese latitud"
     },
     domProps: {
-      value: _vm.regionE
+      value: _vm.latitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.regionE = $event.target.value;
+        _vm.latitud = $event.target.value;
       }
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Coordenadas")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Longitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.coordenadaE,
-      expression: "coordenadaE"
+      value: _vm.longitud,
+      expression: "longitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese coordenada"
+      placeholder: "Ingrese longitud"
     },
     domProps: {
-      value: _vm.coordenadaE
+      value: _vm.longitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.coordenadaE = $event.target.value;
+        _vm.longitud = $event.target.value;
       }
     }
   })])])]), _vm._v(" "), _c("div", {
@@ -6756,6 +6906,8 @@ var staticRenderFns = [function () {
   }, [_c("th", {
     staticClass: "column-title"
   }, [_vm._v("CEO")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
+  }, [_vm._v("Fuerza")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
   }, [_vm._v("Gran Unidad")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
@@ -7127,13 +7279,19 @@ var render = function render() {
       staticClass: ""
     }, [_vm._v(_vm._s(l.sigla))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.nombre))]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.fuerza))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.gran_unidad))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.peq_unidad))]), _vm._v(" "), _c("td", {
+      staticClass: ""
+    }, [_vm._v(_vm._s(l.abreviatura))]), _vm._v(" "), _c("td", {
       staticClass: ""
     }, [_vm._v(_vm._s(l.descripcion))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.region))]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.lat))]), _vm._v(" "), _c("td", {
       staticClass: ""
-    }, [_vm._v(_vm._s(l.coordenadas))]), _vm._v(" "), l.estado == 1 ? [_vm._m(4, true)] : [_vm._m(5, true)], _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(l.lng))]), _vm._v(" "), l.estado == 1 ? [_vm._m(4, true)] : [_vm._m(5, true)], _vm._v(" "), _c("td", {
       staticClass: "a-center"
     }, [_c("button", {
       staticClass: "btn btn-warning btn-sm",
@@ -7186,7 +7344,7 @@ var render = function render() {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title"
-  }, [_vm._v("Registrar CEO")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Registrar Pequeña Unidad")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
@@ -7207,52 +7365,138 @@ var render = function render() {
   }, [_c("form", {
     staticClass: "form-horizontal form-label-left"
   }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Nombre")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Fuerza")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.nombre,
-      expression: "nombre"
+      value: _vm.idfuerza,
+      expression: "idfuerza"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idfuerza = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.changeItem1(_vm.rowId, $event);
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayFuerza, function (fuerza) {
+    return _c("option", {
+      key: fuerza.id,
+      domProps: {
+        value: fuerza.id,
+        textContent: _vm._s(fuerza.fuerza)
+      }
+    });
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Gran Unidad")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.idgranunidad,
+      expression: "idgranunidad"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idgranunidad = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayGranunidad, function (gran_unidad) {
+    return _c("option", {
+      key: gran_unidad.id,
+      domProps: {
+        value: gran_unidad.id,
+        textContent: _vm._s(gran_unidad.gran_unidad)
+      }
+    });
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Pequeña Unidad")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.peq_unidad,
+      expression: "peq_unidad"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese nombre"
+      placeholder: "Ingrese pequeña unidad"
     },
     domProps: {
-      value: _vm.nombre
+      value: _vm.peq_unidad
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.nombre = $event.target.value;
+        _vm.peq_unidad = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Sigla")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Abreviatura")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.sigla,
-      expression: "sigla"
+      value: _vm.abreviatura,
+      expression: "abreviatura"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese sigla"
+      placeholder: "Ingrese abreviatura"
     },
     domProps: {
-      value: _vm.sigla
+      value: _vm.abreviatura
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.sigla = $event.target.value;
+        _vm.abreviatura = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
     staticClass: "form-group row"
   }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
     directives: [{
@@ -7275,53 +7519,57 @@ var render = function render() {
         _vm.descripcion = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Región")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Latitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.region,
-      expression: "region"
+      value: _vm.latitud,
+      expression: "latitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese region"
+      placeholder: "Ingrese latitud"
     },
     domProps: {
-      value: _vm.region
+      value: _vm.latitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.region = $event.target.value;
+        _vm.latitud = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Coordenadas")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Longitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.coordenada,
-      expression: "coordenada"
+      value: _vm.longitud,
+      expression: "longitud"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese coordenada"
+      placeholder: "Ingrese longitud"
     },
     domProps: {
-      value: _vm.coordenada
+      value: _vm.longitud
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.coordenada = $event.target.value;
+        _vm.longitud = $event.target.value;
       }
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -7348,7 +7596,7 @@ var render = function render() {
     staticClass: "modal",
     attrs: {
       tabindex: "-1",
-      id: "pruebaedit"
+      id: "prueba"
     }
   }, [_c("div", {
     staticClass: "modal-dialog"
@@ -7358,7 +7606,7 @@ var render = function render() {
     staticClass: "modal-header"
   }, [_c("h5", {
     staticClass: "modal-title"
-  }, [_vm._v("Editar Servicio")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("Editar Pequeña Unidad")]), _vm._v(" "), _c("button", {
     staticClass: "close",
     attrs: {
       type: "button",
@@ -7379,52 +7627,138 @@ var render = function render() {
   }, [_c("form", {
     staticClass: "form-horizontal form-label-left"
   }, [_c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Nombre")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Fuerza")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.nombreE,
-      expression: "nombreE"
+      value: _vm.idfuerzaE,
+      expression: "idfuerzaE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idfuerzaE = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.changeItem1(_vm.rowId, $event);
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayFuerza, function (fuerza) {
+    return _c("option", {
+      key: fuerza.id,
+      domProps: {
+        value: fuerza.id,
+        textContent: _vm._s(fuerza.fuerza)
+      }
+    });
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Gran Unidad")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.idgranunidadE,
+      expression: "idgranunidadE"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      required: ""
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.idgranunidadE = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "0",
+      disabled: ""
+    }
+  }, [_vm._v("SELECCIONE")]), _vm._v(" "), _vm._l(_vm.arrayGranunidad, function (gran_unidad) {
+    return _c("option", {
+      key: gran_unidad.id,
+      domProps: {
+        value: gran_unidad.id,
+        textContent: _vm._s(gran_unidad.gran_unidad)
+      }
+    });
+  })], 2)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
+    staticClass: "form-group row"
+  }, [_c("label", [_vm._v("Pequeña Unidad")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.peq_unidadE,
+      expression: "peq_unidadE"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese nombre"
+      placeholder: "Ingrese pequeña unidad"
     },
     domProps: {
-      value: _vm.nombreE
+      value: _vm.peq_unidadE
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.nombreE = $event.target.value;
+        _vm.peq_unidadE = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Sigla")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Abreviatura")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.siglaE,
-      expression: "siglaE"
+      value: _vm.abreviaturaE,
+      expression: "abreviaturaE"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese sigla"
+      placeholder: "Ingrese abreviatura"
     },
     domProps: {
-      value: _vm.siglaE
+      value: _vm.abreviaturaE
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.siglaE = $event.target.value;
+        _vm.abreviaturaE = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-12"
+  }, [_c("div", {
     staticClass: "form-group row"
   }, [_c("label", [_vm._v("Descripción")]), _vm._v(" "), _c("input", {
     directives: [{
@@ -7447,53 +7781,57 @@ var render = function render() {
         _vm.descripcionE = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Región")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Latitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.regionE,
-      expression: "regionE"
+      value: _vm.latitudE,
+      expression: "latitudE"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese region"
+      placeholder: "Ingrese latitud"
     },
     domProps: {
-      value: _vm.regionE
+      value: _vm.latitudE
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.regionE = $event.target.value;
+        _vm.latitudE = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "col-md-6"
+  }, [_c("div", {
     staticClass: "form-group row"
-  }, [_c("label", [_vm._v("Coordenadas")]), _vm._v(" "), _c("input", {
+  }, [_c("label", [_vm._v("Longitud")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.coordenadaE,
-      expression: "coordenadaE"
+      value: _vm.longitudE,
+      expression: "longitudE"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text",
-      placeholder: "Ingrese coordenada"
+      placeholder: "Ingrese longitud"
     },
     domProps: {
-      value: _vm.coordenadaE
+      value: _vm.longitudE
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.coordenadaE = $event.target.value;
+        _vm.longitudE = $event.target.value;
       }
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
     staticClass: "modal-footer"
   }, [_c("button", {
     staticClass: "btn btn-secondary",
@@ -7513,10 +7851,10 @@ var render = function render() {
     },
     on: {
       click: function click($event) {
-        return _vm.EditarDatos();
+        return _vm.GuardarDatos();
       }
     }
-  }, [_vm._v("Editar Cambios")])])])])])]);
+  }, [_vm._v("Guardar Cambios")])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -7550,15 +7888,21 @@ var staticRenderFns = [function () {
     staticClass: "headings"
   }, [_c("th", {
     staticClass: "column-title"
-  }, [_vm._v("Sigla")]), _vm._v(" "), _c("th", {
+  }, [_vm._v("CEO")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
-  }, [_vm._v("Nombre")]), _vm._v(" "), _c("th", {
+  }, [_vm._v("Fuerza")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
+  }, [_vm._v("Gran Unidad")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
+  }, [_vm._v("Pequeña Unidad")]), _vm._v(" "), _c("th", {
+    staticClass: "column-title"
+  }, [_vm._v("Abreviatura")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
   }, [_vm._v("Descripción")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
-  }, [_vm._v("Región ")]), _vm._v(" "), _c("th", {
+  }, [_vm._v("Latitud")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
-  }, [_vm._v("Coordenadas ")]), _vm._v(" "), _c("th", {
+  }, [_vm._v("Longitud")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
   }, [_vm._v("Estado ")]), _vm._v(" "), _c("th", {
     staticClass: "column-title"
@@ -12853,6 +13197,25 @@ exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base
 
 // module
 exports.push([module.i, "/* required styles */\r\n\r\n.leaflet-pane,\r\n.leaflet-tile,\r\n.leaflet-marker-icon,\r\n.leaflet-marker-shadow,\r\n.leaflet-tile-container,\r\n.leaflet-pane > svg,\r\n.leaflet-pane > canvas,\r\n.leaflet-zoom-box,\r\n.leaflet-image-layer,\r\n.leaflet-layer {\r\n\tposition: absolute;\r\n\tleft: 0;\r\n\ttop: 0;\r\n\t}\r\n.leaflet-container {\r\n\toverflow: hidden;\r\n\t}\r\n.leaflet-tile,\r\n.leaflet-marker-icon,\r\n.leaflet-marker-shadow {\r\n\t-webkit-user-select: none;\r\n\t   -moz-user-select: none;\r\n\t        user-select: none;\r\n\t  -webkit-user-drag: none;\r\n\t}\r\n/* Prevents IE11 from highlighting tiles in blue */\r\n.leaflet-tile::-moz-selection {\r\n\tbackground: transparent;\r\n}\r\n.leaflet-tile::selection {\r\n\tbackground: transparent;\r\n}\r\n/* Safari renders non-retina tile on retina better with this, but Chrome is worse */\r\n.leaflet-safari .leaflet-tile {\r\n\timage-rendering: -webkit-optimize-contrast;\r\n\t}\r\n/* hack that prevents hw layers \"stretching\" when loading new tiles */\r\n.leaflet-safari .leaflet-tile-container {\r\n\twidth: 1600px;\r\n\theight: 1600px;\r\n\t-webkit-transform-origin: 0 0;\r\n\t}\r\n.leaflet-marker-icon,\r\n.leaflet-marker-shadow {\r\n\tdisplay: block;\r\n\t}\r\n/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */\r\n/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */\r\n.leaflet-container .leaflet-overlay-pane svg {\r\n\tmax-width: none !important;\r\n\tmax-height: none !important;\r\n\t}\r\n.leaflet-container .leaflet-marker-pane img,\r\n.leaflet-container .leaflet-shadow-pane img,\r\n.leaflet-container .leaflet-tile-pane img,\r\n.leaflet-container img.leaflet-image-layer,\r\n.leaflet-container .leaflet-tile {\r\n\tmax-width: none !important;\r\n\tmax-height: none !important;\r\n\twidth: auto;\r\n\tpadding: 0;\r\n\t}\r\n\r\n.leaflet-container img.leaflet-tile {\r\n\t/* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */\r\n\tmix-blend-mode: plus-lighter;\r\n}\r\n\r\n.leaflet-container.leaflet-touch-zoom {\r\n\ttouch-action: pan-x pan-y;\r\n\t}\r\n.leaflet-container.leaflet-touch-drag {\r\n\t/* Fallback for FF which doesn't support pinch-zoom */\r\n\ttouch-action: none;\r\n\ttouch-action: pinch-zoom;\r\n}\r\n.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {\r\n\ttouch-action: none;\r\n}\r\n.leaflet-container {\r\n\t-webkit-tap-highlight-color: transparent;\r\n}\r\n.leaflet-container a {\r\n\t-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);\r\n}\r\n.leaflet-tile {\r\n\tfilter: inherit;\r\n\tvisibility: hidden;\r\n\t}\r\n.leaflet-tile-loaded {\r\n\tvisibility: inherit;\r\n\t}\r\n.leaflet-zoom-box {\r\n\twidth: 0;\r\n\theight: 0;\r\n\tbox-sizing: border-box;\r\n\tz-index: 800;\r\n\t}\r\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\r\n.leaflet-overlay-pane svg {\r\n\t-moz-user-select: none;\r\n\t}\r\n\r\n.leaflet-pane         { z-index: 400; }\r\n\r\n.leaflet-tile-pane    { z-index: 200; }\r\n.leaflet-overlay-pane { z-index: 400; }\r\n.leaflet-shadow-pane  { z-index: 500; }\r\n.leaflet-marker-pane  { z-index: 600; }\r\n.leaflet-tooltip-pane   { z-index: 650; }\r\n.leaflet-popup-pane   { z-index: 700; }\r\n\r\n.leaflet-map-pane canvas { z-index: 100; }\r\n.leaflet-map-pane svg    { z-index: 200; }\r\n\r\n.leaflet-vml-shape {\r\n\twidth: 1px;\r\n\theight: 1px;\r\n\t}\r\n.lvml {\r\n\tbehavior: url(#default#VML);\r\n\tdisplay: inline-block;\r\n\tposition: absolute;\r\n\t}\r\n\r\n\r\n/* control positioning */\r\n\r\n.leaflet-control {\r\n\tposition: relative;\r\n\tz-index: 800;\r\n\tpointer-events: visiblePainted; /* IE 9-10 doesn't have auto */\r\n\tpointer-events: auto;\r\n\t}\r\n.leaflet-top,\r\n.leaflet-bottom {\r\n\tposition: absolute;\r\n\tz-index: 1000;\r\n\tpointer-events: none;\r\n\t}\r\n.leaflet-top {\r\n\ttop: 0;\r\n\t}\r\n.leaflet-right {\r\n\tright: 0;\r\n\t}\r\n.leaflet-bottom {\r\n\tbottom: 0;\r\n\t}\r\n.leaflet-left {\r\n\tleft: 0;\r\n\t}\r\n.leaflet-control {\r\n\tfloat: left;\r\n\tclear: both;\r\n\t}\r\n.leaflet-right .leaflet-control {\r\n\tfloat: right;\r\n\t}\r\n.leaflet-top .leaflet-control {\r\n\tmargin-top: 10px;\r\n\t}\r\n.leaflet-bottom .leaflet-control {\r\n\tmargin-bottom: 10px;\r\n\t}\r\n.leaflet-left .leaflet-control {\r\n\tmargin-left: 10px;\r\n\t}\r\n.leaflet-right .leaflet-control {\r\n\tmargin-right: 10px;\r\n\t}\r\n\r\n\r\n/* zoom and fade animations */\r\n\r\n.leaflet-fade-anim .leaflet-popup {\r\n\topacity: 0;\r\n\ttransition: opacity 0.2s linear;\r\n\t}\r\n.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\r\n\topacity: 1;\r\n\t}\r\n.leaflet-zoom-animated {\r\n\ttransform-origin: 0 0;\r\n\t}\r\nsvg.leaflet-zoom-animated {\r\n\twill-change: transform;\r\n}\r\n\r\n.leaflet-zoom-anim .leaflet-zoom-animated {\r\n\ttransition:         transform 0.25s cubic-bezier(0,0,0.25,1);\r\n\t}\r\n.leaflet-zoom-anim .leaflet-tile,\r\n.leaflet-pan-anim .leaflet-tile {\r\n\ttransition: none;\r\n\t}\r\n\r\n.leaflet-zoom-anim .leaflet-zoom-hide {\r\n\tvisibility: hidden;\r\n\t}\r\n\r\n\r\n/* cursors */\r\n\r\n.leaflet-interactive {\r\n\tcursor: pointer;\r\n\t}\r\n.leaflet-grab {\r\n\tcursor:         grab;\r\n\t}\r\n.leaflet-crosshair,\r\n.leaflet-crosshair .leaflet-interactive {\r\n\tcursor: crosshair;\r\n\t}\r\n.leaflet-popup-pane,\r\n.leaflet-control {\r\n\tcursor: auto;\r\n\t}\r\n.leaflet-dragging .leaflet-grab,\r\n.leaflet-dragging .leaflet-grab .leaflet-interactive,\r\n.leaflet-dragging .leaflet-marker-draggable {\r\n\tcursor: move;\r\n\tcursor:         grabbing;\r\n\t}\r\n\r\n/* marker & overlays interactivity */\r\n.leaflet-marker-icon,\r\n.leaflet-marker-shadow,\r\n.leaflet-image-layer,\r\n.leaflet-pane > svg path,\r\n.leaflet-tile-container {\r\n\tpointer-events: none;\r\n\t}\r\n\r\n.leaflet-marker-icon.leaflet-interactive,\r\n.leaflet-image-layer.leaflet-interactive,\r\n.leaflet-pane > svg path.leaflet-interactive,\r\nsvg.leaflet-image-layer.leaflet-interactive path {\r\n\tpointer-events: visiblePainted; /* IE 9-10 doesn't have auto */\r\n\tpointer-events: auto;\r\n\t}\r\n\r\n/* visual tweaks */\r\n\r\n.leaflet-container {\r\n\tbackground: #ddd;\r\n\toutline-offset: 1px;\r\n\t}\r\n.leaflet-container a {\r\n\tcolor: #0078A8;\r\n\t}\r\n.leaflet-zoom-box {\r\n\tborder: 2px dotted #38f;\r\n\tbackground: rgba(255,255,255,0.5);\r\n\t}\r\n\r\n\r\n/* general typography */\r\n.leaflet-container {\r\n\tfont-family: \"Helvetica Neue\", Arial, Helvetica, sans-serif;\r\n\tfont-size: 12px;\r\n\tfont-size: 0.75rem;\r\n\tline-height: 1.5;\r\n\t}\r\n\r\n\r\n/* general toolbar styles */\r\n\r\n.leaflet-bar {\r\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.65);\r\n\tborder-radius: 4px;\r\n\t}\r\n.leaflet-bar a {\r\n\tbackground-color: #fff;\r\n\tborder-bottom: 1px solid #ccc;\r\n\twidth: 26px;\r\n\theight: 26px;\r\n\tline-height: 26px;\r\n\tdisplay: block;\r\n\ttext-align: center;\r\n\ttext-decoration: none;\r\n\tcolor: black;\r\n\t}\r\n.leaflet-bar a,\r\n.leaflet-control-layers-toggle {\r\n\tbackground-position: 50% 50%;\r\n\tbackground-repeat: no-repeat;\r\n\tdisplay: block;\r\n\t}\r\n.leaflet-bar a:hover,\r\n.leaflet-bar a:focus {\r\n\tbackground-color: #f4f4f4;\r\n\t}\r\n.leaflet-bar a:first-child {\r\n\tborder-top-left-radius: 4px;\r\n\tborder-top-right-radius: 4px;\r\n\t}\r\n.leaflet-bar a:last-child {\r\n\tborder-bottom-left-radius: 4px;\r\n\tborder-bottom-right-radius: 4px;\r\n\tborder-bottom: none;\r\n\t}\r\n.leaflet-bar a.leaflet-disabled {\r\n\tcursor: default;\r\n\tbackground-color: #f4f4f4;\r\n\tcolor: #bbb;\r\n\t}\r\n\r\n.leaflet-touch .leaflet-bar a {\r\n\twidth: 30px;\r\n\theight: 30px;\r\n\tline-height: 30px;\r\n\t}\r\n.leaflet-touch .leaflet-bar a:first-child {\r\n\tborder-top-left-radius: 2px;\r\n\tborder-top-right-radius: 2px;\r\n\t}\r\n.leaflet-touch .leaflet-bar a:last-child {\r\n\tborder-bottom-left-radius: 2px;\r\n\tborder-bottom-right-radius: 2px;\r\n\t}\r\n\r\n/* zoom control */\r\n\r\n.leaflet-control-zoom-in,\r\n.leaflet-control-zoom-out {\r\n\tfont: bold 18px 'Lucida Console', Monaco, monospace;\r\n\ttext-indent: 1px;\r\n\t}\r\n\r\n.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {\r\n\tfont-size: 22px;\r\n\t}\r\n\r\n\r\n/* layers control */\r\n\r\n.leaflet-control-layers {\r\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.4);\r\n\tbackground: #fff;\r\n\tborder-radius: 5px;\r\n\t}\r\n.leaflet-control-layers-toggle {\r\n\tbackground-image: url(" + escape(__webpack_require__(/*! ./images/layers.png */ "./node_modules/leaflet/dist/images/layers.png")) + ");\r\n\twidth: 36px;\r\n\theight: 36px;\r\n\t}\r\n.leaflet-retina .leaflet-control-layers-toggle {\r\n\tbackground-image: url(" + escape(__webpack_require__(/*! ./images/layers-2x.png */ "./node_modules/leaflet/dist/images/layers-2x.png")) + ");\r\n\tbackground-size: 26px 26px;\r\n\t}\r\n.leaflet-touch .leaflet-control-layers-toggle {\r\n\twidth: 44px;\r\n\theight: 44px;\r\n\t}\r\n.leaflet-control-layers .leaflet-control-layers-list,\r\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\r\n\tdisplay: none;\r\n\t}\r\n.leaflet-control-layers-expanded .leaflet-control-layers-list {\r\n\tdisplay: block;\r\n\tposition: relative;\r\n\t}\r\n.leaflet-control-layers-expanded {\r\n\tpadding: 6px 10px 6px 6px;\r\n\tcolor: #333;\r\n\tbackground: #fff;\r\n\t}\r\n.leaflet-control-layers-scrollbar {\r\n\toverflow-y: scroll;\r\n\toverflow-x: hidden;\r\n\tpadding-right: 5px;\r\n\t}\r\n.leaflet-control-layers-selector {\r\n\tmargin-top: 2px;\r\n\tposition: relative;\r\n\ttop: 1px;\r\n\t}\r\n.leaflet-control-layers label {\r\n\tdisplay: block;\r\n\tfont-size: 13px;\r\n\tfont-size: 1.08333em;\r\n\t}\r\n.leaflet-control-layers-separator {\r\n\theight: 0;\r\n\tborder-top: 1px solid #ddd;\r\n\tmargin: 5px -10px 5px -6px;\r\n\t}\r\n\r\n/* Default icon URLs */\r\n.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */\r\n\tbackground-image: url(" + escape(__webpack_require__(/*! ./images/marker-icon.png */ "./node_modules/leaflet/dist/images/marker-icon.png")) + ");\r\n\t}\r\n\r\n\r\n/* attribution and scale controls */\r\n\r\n.leaflet-container .leaflet-control-attribution {\r\n\tbackground: #fff;\r\n\tbackground: rgba(255, 255, 255, 0.8);\r\n\tmargin: 0;\r\n\t}\r\n.leaflet-control-attribution,\r\n.leaflet-control-scale-line {\r\n\tpadding: 0 5px;\r\n\tcolor: #333;\r\n\tline-height: 1.4;\r\n\t}\r\n.leaflet-control-attribution a {\r\n\ttext-decoration: none;\r\n\t}\r\n.leaflet-control-attribution a:hover,\r\n.leaflet-control-attribution a:focus {\r\n\ttext-decoration: underline;\r\n\t}\r\n.leaflet-attribution-flag {\r\n\tdisplay: inline !important;\r\n\tvertical-align: baseline !important;\r\n\twidth: 1em;\r\n\theight: 0.6669em;\r\n\t}\r\n.leaflet-left .leaflet-control-scale {\r\n\tmargin-left: 5px;\r\n\t}\r\n.leaflet-bottom .leaflet-control-scale {\r\n\tmargin-bottom: 5px;\r\n\t}\r\n.leaflet-control-scale-line {\r\n\tborder: 2px solid #777;\r\n\tborder-top: none;\r\n\tline-height: 1.1;\r\n\tpadding: 2px 5px 1px;\r\n\twhite-space: nowrap;\r\n\tbox-sizing: border-box;\r\n\tbackground: rgba(255, 255, 255, 0.8);\r\n\ttext-shadow: 1px 1px #fff;\r\n\t}\r\n.leaflet-control-scale-line:not(:first-child) {\r\n\tborder-top: 2px solid #777;\r\n\tborder-bottom: none;\r\n\tmargin-top: -2px;\r\n\t}\r\n.leaflet-control-scale-line:not(:first-child):not(:last-child) {\r\n\tborder-bottom: 2px solid #777;\r\n\t}\r\n\r\n.leaflet-touch .leaflet-control-attribution,\r\n.leaflet-touch .leaflet-control-layers,\r\n.leaflet-touch .leaflet-bar {\r\n\tbox-shadow: none;\r\n\t}\r\n.leaflet-touch .leaflet-control-layers,\r\n.leaflet-touch .leaflet-bar {\r\n\tborder: 2px solid rgba(0,0,0,0.2);\r\n\tbackground-clip: padding-box;\r\n\t}\r\n\r\n\r\n/* popup */\r\n\r\n.leaflet-popup {\r\n\tposition: absolute;\r\n\ttext-align: center;\r\n\tmargin-bottom: 20px;\r\n\t}\r\n.leaflet-popup-content-wrapper {\r\n\tpadding: 1px;\r\n\ttext-align: left;\r\n\tborder-radius: 12px;\r\n\t}\r\n.leaflet-popup-content {\r\n\tmargin: 13px 24px 13px 20px;\r\n\tline-height: 1.3;\r\n\tfont-size: 13px;\r\n\tfont-size: 1.08333em;\r\n\tmin-height: 1px;\r\n\t}\r\n.leaflet-popup-content p {\r\n\tmargin: 17px 0;\r\n\tmargin: 1.3em 0;\r\n\t}\r\n.leaflet-popup-tip-container {\r\n\twidth: 40px;\r\n\theight: 20px;\r\n\tposition: absolute;\r\n\tleft: 50%;\r\n\tmargin-top: -1px;\r\n\tmargin-left: -20px;\r\n\toverflow: hidden;\r\n\tpointer-events: none;\r\n\t}\r\n.leaflet-popup-tip {\r\n\twidth: 17px;\r\n\theight: 17px;\r\n\tpadding: 1px;\r\n\r\n\tmargin: -10px auto 0;\r\n\tpointer-events: auto;\r\n\ttransform: rotate(45deg);\r\n\t}\r\n.leaflet-popup-content-wrapper,\r\n.leaflet-popup-tip {\r\n\tbackground: white;\r\n\tcolor: #333;\r\n\tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);\r\n\t}\r\n.leaflet-container a.leaflet-popup-close-button {\r\n\tposition: absolute;\r\n\ttop: 0;\r\n\tright: 0;\r\n\tborder: none;\r\n\ttext-align: center;\r\n\twidth: 24px;\r\n\theight: 24px;\r\n\tfont: 16px/24px Tahoma, Verdana, sans-serif;\r\n\tcolor: #757575;\r\n\ttext-decoration: none;\r\n\tbackground: transparent;\r\n\t}\r\n.leaflet-container a.leaflet-popup-close-button:hover,\r\n.leaflet-container a.leaflet-popup-close-button:focus {\r\n\tcolor: #585858;\r\n\t}\r\n.leaflet-popup-scrolled {\r\n\toverflow: auto;\r\n\t}\r\n\r\n.leaflet-oldie .leaflet-popup-content-wrapper {\r\n\t-ms-zoom: 1;\r\n\t}\r\n.leaflet-oldie .leaflet-popup-tip {\r\n\twidth: 24px;\r\n\tmargin: 0 auto;\r\n\r\n\t-ms-filter: \"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)\";\r\n\tfilter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);\r\n\t}\r\n\r\n.leaflet-oldie .leaflet-control-zoom,\r\n.leaflet-oldie .leaflet-control-layers,\r\n.leaflet-oldie .leaflet-popup-content-wrapper,\r\n.leaflet-oldie .leaflet-popup-tip {\r\n\tborder: 1px solid #999;\r\n\t}\r\n\r\n\r\n/* div icon */\r\n\r\n.leaflet-div-icon {\r\n\tbackground: #fff;\r\n\tborder: 1px solid #666;\r\n\t}\r\n\r\n\r\n/* Tooltip */\r\n/* Base styles for the element that has a tooltip */\r\n.leaflet-tooltip {\r\n\tposition: absolute;\r\n\tpadding: 6px;\r\n\tbackground-color: #fff;\r\n\tborder: 1px solid #fff;\r\n\tborder-radius: 3px;\r\n\tcolor: #222;\r\n\twhite-space: nowrap;\r\n\t-webkit-user-select: none;\r\n\t-moz-user-select: none;\r\n\tuser-select: none;\r\n\tpointer-events: none;\r\n\tbox-shadow: 0 1px 3px rgba(0,0,0,0.4);\r\n\t}\r\n.leaflet-tooltip.leaflet-interactive {\r\n\tcursor: pointer;\r\n\tpointer-events: auto;\r\n\t}\r\n.leaflet-tooltip-top:before,\r\n.leaflet-tooltip-bottom:before,\r\n.leaflet-tooltip-left:before,\r\n.leaflet-tooltip-right:before {\r\n\tposition: absolute;\r\n\tpointer-events: none;\r\n\tborder: 6px solid transparent;\r\n\tbackground: transparent;\r\n\tcontent: \"\";\r\n\t}\r\n\r\n/* Directions */\r\n\r\n.leaflet-tooltip-bottom {\r\n\tmargin-top: 6px;\r\n}\r\n.leaflet-tooltip-top {\r\n\tmargin-top: -6px;\r\n}\r\n.leaflet-tooltip-bottom:before,\r\n.leaflet-tooltip-top:before {\r\n\tleft: 50%;\r\n\tmargin-left: -6px;\r\n\t}\r\n.leaflet-tooltip-top:before {\r\n\tbottom: 0;\r\n\tmargin-bottom: -12px;\r\n\tborder-top-color: #fff;\r\n\t}\r\n.leaflet-tooltip-bottom:before {\r\n\ttop: 0;\r\n\tmargin-top: -12px;\r\n\tmargin-left: -6px;\r\n\tborder-bottom-color: #fff;\r\n\t}\r\n.leaflet-tooltip-left {\r\n\tmargin-left: -6px;\r\n}\r\n.leaflet-tooltip-right {\r\n\tmargin-left: 6px;\r\n}\r\n.leaflet-tooltip-left:before,\r\n.leaflet-tooltip-right:before {\r\n\ttop: 50%;\r\n\tmargin-top: -6px;\r\n\t}\r\n.leaflet-tooltip-left:before {\r\n\tright: 0;\r\n\tmargin-right: -12px;\r\n\tborder-left-color: #fff;\r\n\t}\r\n.leaflet-tooltip-right:before {\r\n\tleft: 0;\r\n\tmargin-left: -12px;\r\n\tborder-right-color: #fff;\r\n\t}\r\n\r\n/* Printing */\r\n\r\n@media print {\r\n\t/* Prevent printers from removing background-images of controls. */\r\n\t.leaflet-control {\r\n\t\t-webkit-print-color-adjust: exact;\r\n\t\tprint-color-adjust: exact;\r\n\t\t}\r\n\t}\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-select/dist/vue-select.css":
+/*!*************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-select/dist/vue-select.css ***!
+  \*************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ":host,:root{--vs-colors--lightest:rgba(60,60,60,0.26);--vs-colors--light:rgba(60,60,60,0.5);--vs-colors--dark:#333;--vs-colors--darkest:rgba(0,0,0,0.15);--vs-search-input-color:inherit;--vs-search-input-bg:#fff;--vs-search-input-placeholder-color:inherit;--vs-font-size:1rem;--vs-line-height:1.4;--vs-state-disabled-bg:#f8f8f8;--vs-state-disabled-color:var(--vs-colors--light);--vs-state-disabled-controls-color:var(--vs-colors--light);--vs-state-disabled-cursor:not-allowed;--vs-border-color:var(--vs-colors--lightest);--vs-border-width:1px;--vs-border-style:solid;--vs-border-radius:4px;--vs-actions-padding:4px 6px 0 3px;--vs-controls-color:var(--vs-colors--light);--vs-controls-size:1;--vs-controls--deselect-text-shadow:0 1px 0 #fff;--vs-selected-bg:#f0f0f0;--vs-selected-color:var(--vs-colors--dark);--vs-selected-border-color:var(--vs-border-color);--vs-selected-border-style:var(--vs-border-style);--vs-selected-border-width:var(--vs-border-width);--vs-dropdown-bg:#fff;--vs-dropdown-color:inherit;--vs-dropdown-z-index:1000;--vs-dropdown-min-width:160px;--vs-dropdown-max-height:350px;--vs-dropdown-box-shadow:0px 3px 6px 0px var(--vs-colors--darkest);--vs-dropdown-option-bg:#000;--vs-dropdown-option-color:var(--vs-dropdown-color);--vs-dropdown-option-padding:3px 20px;--vs-dropdown-option--active-bg:#5897fb;--vs-dropdown-option--active-color:#fff;--vs-dropdown-option--deselect-bg:#fb5858;--vs-dropdown-option--deselect-color:#fff;--vs-transition-timing-function:cubic-bezier(1,-0.115,0.975,0.855);--vs-transition-duration:150ms}.v-select{font-family:inherit;position:relative}.v-select,.v-select *{box-sizing:border-box}:root{--vs-transition-timing-function:cubic-bezier(1,0.5,0.8,1);--vs-transition-duration:0.15s}@keyframes vSelectSpinner{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}.vs__fade-enter-active,.vs__fade-leave-active{pointer-events:none;transition:opacity var(--vs-transition-duration) var(--vs-transition-timing-function)}.vs__fade-enter,.vs__fade-leave-to{opacity:0}:root{--vs-disabled-bg:var(--vs-state-disabled-bg);--vs-disabled-color:var(--vs-state-disabled-color);--vs-disabled-cursor:var(--vs-state-disabled-cursor)}.vs--disabled .vs__clear,.vs--disabled .vs__dropdown-toggle,.vs--disabled .vs__open-indicator,.vs--disabled .vs__search,.vs--disabled .vs__selected{background-color:var(--vs-disabled-bg);cursor:var(--vs-disabled-cursor)}.v-select[dir=rtl] .vs__actions{padding:0 3px 0 6px}.v-select[dir=rtl] .vs__clear{margin-left:6px;margin-right:0}.v-select[dir=rtl] .vs__deselect{margin-left:0;margin-right:2px}.v-select[dir=rtl] .vs__dropdown-menu{text-align:right}.vs__dropdown-toggle{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:var(--vs-search-input-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:var(--vs-border-radius);display:flex;padding:0 0 4px;white-space:normal}.vs__selected-options{display:flex;flex-basis:100%;flex-grow:1;flex-wrap:wrap;padding:0 2px;position:relative}.vs__actions{align-items:center;display:flex;padding:var(--vs-actions-padding)}.vs--searchable .vs__dropdown-toggle{cursor:text}.vs--unsearchable .vs__dropdown-toggle{cursor:pointer}.vs--open .vs__dropdown-toggle{border-bottom-color:transparent;border-bottom-left-radius:0;border-bottom-right-radius:0}.vs__open-indicator{fill:var(--vs-controls-color);transform:scale(var(--vs-controls-size));transition:transform var(--vs-transition-duration) var(--vs-transition-timing-function);transition-timing-function:var(--vs-transition-timing-function)}.vs--open .vs__open-indicator{transform:rotate(180deg) scale(var(--vs-controls-size))}.vs--loading .vs__open-indicator{opacity:0}.vs__clear{fill:var(--vs-controls-color);background-color:transparent;border:0;cursor:pointer;margin-right:8px;padding:0}.vs__dropdown-menu{background:var(--vs-dropdown-bg);border:var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);border-radius:0 0 var(--vs-border-radius) var(--vs-border-radius);border-top-style:none;box-shadow:var(--vs-dropdown-box-shadow);box-sizing:border-box;color:var(--vs-dropdown-color);display:block;left:0;list-style:none;margin:0;max-height:var(--vs-dropdown-max-height);min-width:var(--vs-dropdown-min-width);overflow-y:auto;padding:5px 0;position:absolute;text-align:left;top:calc(100% - var(--vs-border-width));width:100%;z-index:var(--vs-dropdown-z-index)}.vs__no-options{text-align:center}.vs__dropdown-option{clear:both;color:var(--vs-dropdown-option-color);cursor:pointer;display:block;line-height:1.42857143;padding:var(--vs-dropdown-option-padding);white-space:nowrap}.vs__dropdown-option--highlight{background:var(--vs-dropdown-option--active-bg);color:var(--vs-dropdown-option--active-color)}.vs__dropdown-option--deselect{background:var(--vs-dropdown-option--deselect-bg);color:var(--vs-dropdown-option--deselect-color)}.vs__dropdown-option--disabled{background:var(--vs-state-disabled-bg);color:var(--vs-state-disabled-color);cursor:var(--vs-state-disabled-cursor)}.vs__selected{align-items:center;background-color:var(--vs-selected-bg);border:var(--vs-selected-border-width) var(--vs-selected-border-style) var(--vs-selected-border-color);border-radius:var(--vs-border-radius);color:var(--vs-selected-color);display:flex;line-height:var(--vs-line-height);margin:4px 2px 0;padding:0 .25em;z-index:0}.vs__deselect{fill:var(--vs-controls-color);-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:0;cursor:pointer;display:inline-flex;margin-left:4px;padding:0;text-shadow:var(--vs-controls--deselect-text-shadow)}.vs--single .vs__selected{background-color:transparent;border-color:transparent}.vs--single.vs--loading .vs__selected,.vs--single.vs--open .vs__selected{opacity:.4;position:absolute}.vs--single.vs--searching .vs__selected{display:none}.vs__search::-webkit-search-cancel-button{display:none}.vs__search::-ms-clear,.vs__search::-webkit-search-decoration,.vs__search::-webkit-search-results-button,.vs__search::-webkit-search-results-decoration{display:none}.vs__search,.vs__search:focus{-webkit-appearance:none;-moz-appearance:none;appearance:none;background:none;border:1px solid transparent;border-left:none;box-shadow:none;color:var(--vs-search-input-color);flex-grow:1;font-size:var(--vs-font-size);line-height:var(--vs-line-height);margin:4px 0 0;max-width:100%;outline:none;padding:0 7px;width:0;z-index:1}.vs__search::-moz-placeholder{color:var(--vs-search-input-placeholder-color)}.vs__search::placeholder{color:var(--vs-search-input-placeholder-color)}.vs--unsearchable .vs__search{opacity:1}.vs--unsearchable:not(.vs--disabled) .vs__search{cursor:pointer}.vs--single.vs--searching:not(.vs--open):not(.vs--loading) .vs__search{opacity:.2}.vs__spinner{align-self:center;animation:vSelectSpinner 1.1s linear infinite;border:.9em solid hsla(0,0%,39%,.1);border-left-color:rgba(60,60,60,.45);font-size:5px;opacity:0;overflow:hidden;text-indent:-9999em;transform:translateZ(0) scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));transition:opacity .1s}.vs__spinner,.vs__spinner:after{border-radius:50%;height:5em;transform:scale(var(--vs-controls--spinner-size,var(--vs-controls-size)));width:5em}.vs--loading .vs__spinner{opacity:1}", ""]);
 
 // exports
 

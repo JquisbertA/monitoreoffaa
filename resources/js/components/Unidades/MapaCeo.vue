@@ -300,6 +300,10 @@ export default {
     },
 
     async saveLocation() {
+      console.log("Guardando ubicación:", this.currentLocation);
+console.log("Método:", method);
+console.log("URL:", url);
+
       const formData = new FormData();
       formData.append('name', this.currentLocation.name);
       formData.append('description', this.currentLocation.description);
@@ -375,6 +379,10 @@ export default {
     },
 
     async updateMarker() {
+      console.log("Guardando ubicación:", this.currentLocation);
+console.log("Método:", method);
+console.log("URL:", url);
+
       try {
         // Validación básica
         if (!this.currentLocation.name || !this.currentLocation.lat || !this.currentLocation.lng) {

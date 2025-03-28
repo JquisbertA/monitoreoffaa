@@ -15,8 +15,8 @@ class CreateGranUnidadsTable extends Migration
     {
         Schema::create('gran_unidads', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('ceo_id');
-            $table->string('nombre',50);
+            $table->unsignedBigInteger('id_fuerza');
+            $table->string('gran_unidad',50);
             $table->string('abreviatura',10);
             $table->string('descripcion',300);
             $table->decimal('lat', 10, 8);

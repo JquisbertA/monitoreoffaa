@@ -66,7 +66,7 @@ Route::post('/unidades/listaGranUni', 'GranUnidadController@Listar');
 Route::post('/unidades/datosGranUni', 'GranUnidadController@Datos');
 Route::post('/unidades/editarGranUni', 'GranUnidadController@Editar');
 Route::post('/unidades/estadoGranUni', 'GranUnidadController@CambioEstado');
-
+Route::get('/unidades/selectbuscarGranUnidad', 'GranUnidadController@selectbuscarGranUnidad');
 
 /* PEQUEÑAS UNIDADES */
 Route::post('/unidades/crearPeqUni', 'PeqUnidadController@Guardar');
@@ -130,6 +130,7 @@ Route::post('/crearPersonal', 'PersonalController@CrearPersonal');
 
 // FUERZA
 Route::post('/listarFuerza', 'FuerzaController@ListarFuerza');
+Route::get('/selectFuerza', 'FuerzaController@SelectFuerza');
 
 // ESCALAFON
 Route::post('/listarEscalafon', 'EscalafonController@ListarEscalafon');

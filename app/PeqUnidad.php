@@ -12,11 +12,11 @@ class PeqUnidad extends Model
 
     protected $fillable = [
         'id',
-        'gu_id',
-        'nombre',
+        'id_gran_unidad',
+        'id_fuerza',
+        'peq_unidad',
         'abreviatura',
         'descripcion',
-        'coordenadas',
         'lat',
         'lng',
         'estado',

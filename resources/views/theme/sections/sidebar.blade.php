@@ -34,7 +34,7 @@
                   <p class="mb-0">Personal</p>
                 </router-link>
               </li>
-              <li>
+              {{-- <li>
                 <router-link class="nav-link" to='/empresaServicio'>
                   <p class="mb-0">Unidades</p>
                 </router-link>
@@ -44,12 +44,8 @@
                 <router-link class="nav-link" to='/modoPagoServicio'>
                   <p class="mb-0">Incidentes</p>
                 </router-link>
-              </li>
-              <li><a href="icons.html">Unidades</a></li>
-              <li><a href="glyphicons.html">Datos titular</a></li>
-              <li><a href="invoice.html">Proveedores</a></li>
-              <li><a href="inbox.html">Responsables</a></li>
-              <li><a href="calendar.html">Otros</a></li>
+              </li> --}}
+
             </ul>
           </li>
           <li><a><i class="fa fa-list"></i> Unidades <span class="fa fa-chevron-down"></span></a>{{-- UNIDADES --}}

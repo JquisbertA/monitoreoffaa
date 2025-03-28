@@ -15,9 +15,10 @@ class CreatePeqUnidadsTable extends Migration
     {
         Schema::create('peq_unidads', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('gu_id');
-            $table->string('nombre',50);
-            $table->string('abreviatura',10);
+            $table->unsignedBigInteger('id_gran_unidad');
+            $table->unsignedBigInteger('id_fuerza');
+            $table->string('peq_unidad',150);
+            $table->string('abreviatura',50);
             $table->string('descripcion',300);
             $table->decimal('lat', 10, 8);
             $table->decimal('lng', 11, 8);

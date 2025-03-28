@@ -40,4 +40,29 @@ class FuerzaController extends Controller
                 ->get();
                 return ['fuerza' => $fuerza];
     }
+
+    /* public function SelectFuerza(Request $request){
+        if (!$request->ajax()) {
+            return response()->json(['error' => 'Acceso no permitido'], 403);
+        }
+        $fuerza = DB::table('fuerza')
+        ->where('estado','=','1') 
+        ->select('id','fuerza')
+        ->orderBy('id','asc')->get();
+
+        return ['fuerza' => $fuerza]; 
+    } */
+
+    public function SelectFuerza(Request $request)
+    {
+        abort_if(!$request->ajax(), 403, 'Acceso no permitido');
+
+        $fuerza = DB::table('fuerza')
+            ->where('estado', 1)
+            ->orderBy('id')
+            ->get(['id', 'fuerza']);
+
+        return response()->json($fuerza);
+    }
+
 }

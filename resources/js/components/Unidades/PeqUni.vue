@@ -35,11 +35,14 @@
                 <table class="table table-striped jambo_table bulk_action">
                   <thead>
                     <tr class="headings">
-                      <th class="column-title">Sigla</th>
-                      <th class="column-title">Nombre</th>
+                      <th class="column-title">CEO</th>
+                      <th class="column-title">Fuerza</th>
+                      <th class="column-title">Gran Unidad</th>
+                      <th class="column-title">Pequeña Unidad</th>
+                      <th class="column-title">Abreviatura</th>
                       <th class="column-title">Descripción</th>
-                      <th class="column-title">Región </th>
-                      <th class="column-title">Coordenadas </th>
+                      <th class="column-title">Latitud</th>
+                      <th class="column-title">Longitud</th>
                       <th class="column-title">Estado </th>
                       <th class="column-title">Acciones </th>
                     </tr>
@@ -48,10 +51,13 @@
                   <tbody>
                     <tr class="even pointer" v-for="l in lista">
                       <td class=" ">{{ l.sigla }}</td>
-                      <td class=" ">{{ l.nombre }}</td>
+                      <td class=" ">{{ l.fuerza }}</td>
+                      <td class=" ">{{ l.gran_unidad }}</td>
+                      <td class=" ">{{ l.peq_unidad }}</td>
+                      <td class=" ">{{ l.abreviatura }}</td>
                       <td class=" ">{{ l.descripcion }}</td>
-                      <td class=" ">{{ l.region }}</td>
-                      <td class=" ">{{ l.coordenadas }}</td>
+                      <td class=" ">{{ l.lat }}</td>
+                      <td class=" ">{{ l.lng }}</td>
                       <template v-if="l.estado == 1">
                         <td style="width: 100px;"><div><span class="badge badge-success">Activo</span></div></td>
                       </template>
@@ -77,36 +83,65 @@
           </div>
         </div>
       </div>
+      <!-- Modal Registrar -->
       <div class="modal" tabindex="-1" id="prueba">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Registrar CEO</h5>
+              <h5 class="modal-title">Registrar Pequeña Unidad</h5>
               <button type="button" class="close" data-dismiss="modal" @click="cerrarModal()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <form class="form-horizontal form-label-left">
-                <div class="form-group row">
-                  <label>Nombre</label>
-                  <input type="text" class="form-control" placeholder="Ingrese nombre" v-model="nombre">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Fuerza</label>
+                    <select class="form-control" v-model="idfuerza" required v-on:change="changeItem1(rowId, $event)">
+                      <option value="0" disabled>SELECCIONE</option>
+                      <option v-for="fuerza in arrayFuerza" :key="fuerza.id" :value="fuerza.id" v-text="fuerza.fuerza"></option>
+                    </select>
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Sigla</label>
-                  <input type="text" class="form-control" placeholder="Ingrese sigla" v-model="sigla">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Gran Unidad</label>
+                    <select class="form-control" v-model="idgranunidad" required>
+                        <option value="0" disabled>SELECCIONE</option>
+                        <option v-for="gran_unidad in arrayGranunidad" :key="gran_unidad.id" :value="gran_unidad.id" v-text="gran_unidad.gran_unidad"></option>
+                      </select>
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Descripción</label>
-                  <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcion">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Pequeña Unidad</label>
+                    <input type="text" class="form-control" placeholder="Ingrese pequeña unidad" v-model="peq_unidad">
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Región</label>
-                  <input type="text" class="form-control" placeholder="Ingrese region" v-model="region">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Abreviatura</label>
+                    <input type="text" class="form-control" placeholder="Ingrese abreviatura" v-model="abreviatura">
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Coordenadas</label>
-                  <input type="text" class="form-control" placeholder="Ingrese coordenada" v-model="coordenada">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label>Descripción</label>
+                    <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcion">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Latitud</label>
+                    <input type="text" class="form-control" placeholder="Ingrese latitud" v-model="latitud">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Longitud</label>
+                    <input type="text" class="form-control" placeholder="Ingrese longitud" v-model="longitud">
+                  </div>
                 </div>
 
               </form>
@@ -119,42 +154,71 @@
         </div>
       </div>
   
-      <div class="modal" tabindex="-1" id="pruebaedit">
+      <div class="modal" tabindex="-1" id="prueba">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Editar Servicio</h5>
+              <h5 class="modal-title">Editar Pequeña Unidad</h5>
               <button type="button" class="close" data-dismiss="modal" @click="cerrarModal()" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <form class="form-horizontal form-label-left">
-                <div class="form-group row">
-                  <label>Nombre</label>
-                  <input type="text" class="form-control" placeholder="Ingrese nombre" v-model="nombreE">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Fuerza</label>
+                    <select class="form-control" v-model="idfuerzaE" required v-on:change="changeItem1(rowId, $event)">
+                        <option value="0" disabled>SELECCIONE</option>
+                        <option v-for="fuerza in arrayFuerza" :key="fuerza.id" :value="fuerza.id" v-text="fuerza.fuerza"></option>
+                      </select>
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Sigla</label>
-                  <input type="text" class="form-control" placeholder="Ingrese sigla" v-model="siglaE">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Gran Unidad</label>
+                    <select class="form-control" v-model="idgranunidadE" required>
+                        <option value="0" disabled>SELECCIONE</option>
+                        <option v-for="gran_unidad in arrayGranunidad" :key="gran_unidad.id" :value="gran_unidad.id" v-text="gran_unidad.gran_unidad"></option>
+                      </select>
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Descripción</label>
-                  <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcionE">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Pequeña Unidad</label>
+                    <input type="text" class="form-control" placeholder="Ingrese pequeña unidad" v-model="peq_unidadE">
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Región</label>
-                  <input type="text" class="form-control" placeholder="Ingrese region" v-model="regionE">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Abreviatura</label>
+                    <input type="text" class="form-control" placeholder="Ingrese abreviatura" v-model="abreviaturaE">
+                  </div>
                 </div>
-                <div class="form-group row">
-                  <label>Coordenadas</label>
-                  <input type="text" class="form-control" placeholder="Ingrese coordenada" v-model="coordenadaE">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label>Descripción</label>
+                    <input type="text" class="form-control" placeholder="Ingrese descripcion" v-model="descripcionE">
+                  </div>
                 </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Latitud</label>
+                    <input type="text" class="form-control" placeholder="Ingrese latitud" v-model="latitudE">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label>Longitud</label>
+                    <input type="text" class="form-control" placeholder="Ingrese longitud" v-model="longitudE">
+                  </div>
+                </div>
+
               </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" @click="cerrarModal()" data-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" v-on:click="EditarDatos()">Editar Cambios</button>
+              <button type="button" class="btn btn-primary" v-on:click="GuardarDatos()">Guardar Cambios</button>
             </div>
           </div>
         </div>
@@ -169,21 +233,29 @@
         return {
           lista:[],
           buscar:'',
+          arrayFuerza:[],
+          idfuerza:0,
+          arrayGranunidad:[],
+          idgranunidad:0,
           //modal registro
-          nombre:'',
-          sigla:'',
+          peq_unidad:'',
+          abreviatura:'',
           descripcion:'',
-          region:'',
-          coordenada:'',
+          latitud:'',
+          longitud:'',
           codigo:'',
+
+          idfuerzaE:0,
+          idgranunidadE:0,
           //modal editar
-          nombreE:'',
-          siglaE:'',
+          peq_unidadE:'',
+          abreviaturaE:'',
           descripcionE:'',
-          regionE:'',
-          coordenadaE:'',
+          latitudE:'',
+          longitudE:'',
           codigoE:'',
           idE:'',
+          rowId : 0,
         }
       },
       mounted() {
@@ -194,7 +266,7 @@
         Listar(){
           let me = this;
           axios
-          .post('/unidades/listaCeo',{
+          .post('/unidades/listaPeqUni',{
             buscar : me.buscar,
           })
           .then(function (response) {
@@ -220,17 +292,21 @@
   
         AbrirModal(){
           $('#prueba').modal('show');
+          this.selectFuerza();
+          this.selectbuscarGranUnidad(this.idfuerza);
         },
   
         GuardarDatos(){
           let me = this;
           axios
-          .post("/unidades/crearCeo", {
-            nombre:me.nombre,
-            sigla:me.sigla,
+          .post("/unidades/crearPeqUni", {
+            id_fuerza:me.idfuerza,
+            id_granunidad:me.idgranunidad,
+            peq_unidad:me.peq_unidad,
+            abreviatura:me.abreviatura,
             descripcion:me.descripcion,
-            region:me.region,
-            coordenada:me.coordenada
+            latitud:me.latitud,
+            longitud:me.longitud,
           })
           .then(function (response) {
             //Respuesta de la peticion
@@ -313,7 +389,54 @@
             console.log(error);
           })
   
-        }
+        },
+
+        selectFuerza(){
+          let me =this;
+          var url='/selectFuerza';
+          axios.get(url).then(function (response) {
+              var respuesta = response.data;
+              console.log(respuesta);
+              me.arrayFuerza = respuesta; 
+          })
+          .catch(function (error) {
+          // handle error
+          console.log(error);
+          })
+          .then(function () {
+          // always executed
+          });
+        },
+
+        changeItem1: function changeItem1(rowId, event) { 
+          this.selected = "rowId: " + rowId + ", target.value: " + event.target.value;
+          this.selectbuscarGranUnidad(event.target.value);
+        },
+
+        selectbuscarGranUnidad(dest)
+        {
+            let me =this;
+            me.buscarD= dest;
+            me.arrayGranunidad=[];
+          //  me.prov_codigo=0;
+            var url='/unidades/selectbuscarGranUnidad?buscar=' + dest;
+            me.selected = url;
+            axios.get(url).then(function (response) {
+
+              var respuesta = response.data;
+                me.arrayGranunidad = respuesta.gran_unidad; 
+                
+            })
+            .catch(function (error) {
+            // handle error 
+            me.selected =error;
+            console.log(error);
+            })
+            .then(function () {
+              
+            // always executed
+            }); 
+        },
   
   
       },

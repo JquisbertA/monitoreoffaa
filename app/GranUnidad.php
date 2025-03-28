@@ -11,11 +11,10 @@ class GranUnidad extends Model
 
     protected $fillable = [
         'id',
-        'ceo_id',
-        'nombre',
+        'id_fuerza',
+        'gran_unidad',
         'abreviatura',
         'descripcion',
-        'coordenadas',
         'lat',
         'lng',
         'estado',
